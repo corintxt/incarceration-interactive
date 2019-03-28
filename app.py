@@ -6,10 +6,9 @@ import sqlite3
 
 app = Flask(__name__)
 
-# Connect to database
-conn = sqlite3.connect('./db/incarceration.db')
-
+# Declare global variable
 county_list = []
+
 
 # Index page
 @app.route('/', methods=['POST'])
