@@ -3,9 +3,14 @@
 {% block content %}
 
 <div class="charts text-center">
-    <div class="row"><div id="bar"></div></div><hr>
+    <div class="row"><div id="bar"></div></div>
+    <hr>
     <div id="vis-tooltip" class="vg-tooltip"></div>
   </div>
+</div>
+
+<div class="text-center">
+    <a href="/county" class="btn btn-default" role="button">View another county</a>
 </div>
 
 <!-- Render Charts -->
@@ -21,7 +26,7 @@
       vegaTooltip.vegaLite(result.view, url);
     });
   }
-  //tells vega where to find the JSON for each bar type
+  //tells vega where to find the JSON for each chart type
   parse("/bar", "bar") // this is what calls the /bar route
 </script>
 
