@@ -4,10 +4,19 @@
 
 <div class="charts text-center">
     <div class="row"><div id="bar"></div></div>
-    <hr>
     <div id="vis-tooltip" class="vg-tooltip"></div>
   </div>
 </div>
+
+<hr>
+
+<div class="charts text-center">
+    <div class="row"><div id="pretrial"></div></div>
+    <div id="vis-tooltip" class="vg-tooltip"></div>
+  </div>
+</div>
+
+<hr>
 
 <div class="text-center">
     <a href="/county" class="btn btn-default" role="button">View another county</a>
@@ -26,8 +35,10 @@
       vegaTooltip.vegaLite(result.view, url);
     });
   }
+  $.get("/sessiondata")   // call session data route
   //tells vega where to find the JSON for each chart type
   parse("/bar", "bar") // this is what calls the /bar route
+  parse("/pretrial", "pretrial")
 </script>
 
 {% endblock %}

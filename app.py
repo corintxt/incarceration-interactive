@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
@@ -44,25 +44,41 @@ def index():
 def county():
     return render_template('county_form.html')
 
+# Set session data
+@app.route("/sessiondata")
+# This is called by $.get() in county_data.html
+def set_session_data():
+    session['current_county'] = county_list.pop()
 
-### Altair data Routes
-
+### Altair data routes
 WIDTH = 600
 HEIGHT = 300
 
 @app.route("/bar")
 def data_bar():
-    current_county = county_list.pop()
-    county_data = read_county_from_db(current_county)
+    county_data = read_county_from_db(session.get('current_county', None))
 
     # Create the chart
     chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='lightgreen').encode(
         X('year:O', axis=Axis(title='Year')),
         Y('total_prison_pop', axis=Axis(title='Total Prison Population'))
     ).properties(
-    title='Prison population in {}'.format(current_county)
+    title='Prison population in {}'.format(session.get('current_county', None))
+    )
+    return chart.to_json()
+
+@app.route("/pretrial")
+def pretrial_jail_chart():
+    county_data = read_county_from_db(session.get('current_county', None))
+
+    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_area(color='lightblue').encode(
+        X('year:O', axis=Axis(title='Year')),
+        Y('total_jail_pretrial', axis=Axis(title='Number of inmates'))
+    ).properties(
+    title='Pre-trial jail population in {}'.format(session.get('current_county', None))
     )
     return chart.to_json()
 
 if __name__ == '__main__':
+    app.secret_key = 'secret key' #Fix this later!
     app.run(debug=True)
