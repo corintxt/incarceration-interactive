@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
@@ -11,12 +11,16 @@ county_list = []
 
 
 # Index page
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST', 'GET'])
 def index():
-    county = request.form['county_name']
-    county_list.append(county)
+    if request.method == 'POST':
+        county = request.form['county_name']
+        county_list.append(county)
 
-    return render_template('county_data.html')
+        return render_template('county_data.html')
+
+    else:
+        return redirect(url_for('county'))
 
 ### Altair Data Routes
 
