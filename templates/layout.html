@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Incarceration Trends</title>
-</head>
+<html lang="en">
+  <head>
+    <title>Incarceration data interactive</title>
+    <meta charset="utf-8">
+
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js">script></script>
+
+    <!-- Import vega -->
+     <script src="https://cdn.jsdelivr.net/npm/vega@5.3.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc15"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@3.30.0"></script>
+
+    <script src="https://vega.github.io/datalib/datalib.min.js"></script>
+
+
+    <style>hr, h3 {padding-bottom: 20px;} canvas {background-color: #fffff;}</style>
+    
+  </head>
 <body>
+
+<div class="container">
+
+        <div class="header">
+            <ul class="nav nav-pills pull-right">
+            <li class="active">
+            <li><a href="https://altair-viz.github.io/index.html">Altair</a></li>
+            <li><a href="https://vega.github.io/vega-lite/">Vega-Lite</a></li>
+            </ul>
+            <h3 class="text-muted">Prison population charts | Vega and Altair demo</h3>
+</div>
 
 {% block content%}
 
