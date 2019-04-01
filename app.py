@@ -52,12 +52,15 @@ HEIGHT = 300
 
 @app.route("/bar")
 def data_bar():
-    county_data = read_county_from_db(county_list.pop())
+    current_county = county_list.pop()
+    county_data = read_county_from_db(current_county)
 
     # Create the chart
     chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='lightgreen').encode(
         X('year:O', axis=Axis(title='Year')),
         Y('total_prison_pop', axis=Axis(title='Total Prison Population'))
+    ).properties(
+    title='Prison population in {}'.format(current_county)
     )
     return chart.to_json()
 
