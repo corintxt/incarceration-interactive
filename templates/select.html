@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>Select State</h1>
+
+<div class="dropdown">
+<select name=state method="GET" action="/select">
+    {% for state in states %}
+    <option value= "{{state}}" SELECTED>{{state}}</option>"
+    {% endfor %}
+</select>
+</div>
+
+{% endblock %}
