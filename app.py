@@ -32,7 +32,8 @@ def read_county_from_db(county_name):
 def index():
     if request.method == 'POST':
         county = request.form['county_name']
-        county_list.append(county)
+        # county_list.append(county)
+        session['current_county'] = county
 
         return render_template('county_data.html')
 
@@ -45,13 +46,6 @@ def index():
 def county():
     return render_template('county_form.html')
 
-# Set session data
-@app.route("/sessiondata", methods=['GET'])
-# This is called by $.get() in county_data.html
-def set_session_data():
-    session['current_county'] = county_list.pop()
-    print("Setting county: {}".format(session.get('current_county')))
-    return "OK"
 
 ### Altair data routes
 WIDTH = 600
