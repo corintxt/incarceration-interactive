@@ -35,10 +35,13 @@
       vegaTooltip.vegaLite(result.view, url);
     });
   }
-  $.get("/sessiondata")   // call session data route
-  //tells vega where to find the JSON for each chart type
-  parse("/bar", "bar") // this is what calls the /bar route
-  parse("/pretrial", "pretrial")
+  // set session data; load charts as callback
+  $.get("/sessiondata", function(){
+    //tells vega where to find the JSON for each chart type
+    parse("/bar", "bar")
+    parse("/pretrial", "pretrial")  
+  })
+
 </script>
 
 {% endblock %}

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, request, redirect, url_for, session
+# from flask.ext.session import Session
 import pandas as pd
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
@@ -45,10 +46,12 @@ def county():
     return render_template('county_form.html')
 
 # Set session data
-@app.route("/sessiondata")
+@app.route("/sessiondata", methods=['GET'])
 # This is called by $.get() in county_data.html
 def set_session_data():
     session['current_county'] = county_list.pop()
+    print("Setting county: {}".format(session.get('current_county')))
+    return "OK"
 
 ### Altair data routes
 WIDTH = 600
@@ -80,5 +83,5 @@ def pretrial_jail_chart():
     return chart.to_json()
 
 if __name__ == '__main__':
-    app.secret_key = 'secret key' #Fix this later!
+    app.secret_key = 'very secret key' #Fix this later!
     app.run(debug=True)
