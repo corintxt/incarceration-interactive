@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, request, redirect, url_for, session
-# from flask.ext.session import Session
 import pandas as pd
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
 
 app = Flask(__name__)
-
-### Database stuff
-# Declare global variable
-county_list = []
 
 def read_county_from_db(county_name):
     # Connect to database
@@ -32,7 +27,6 @@ def read_county_from_db(county_name):
 def index():
     if request.method == 'POST':
         county = request.form['county_name']
-        # county_list.append(county)
         session['current_county'] = county
 
         return render_template('county_data.html')
@@ -40,6 +34,31 @@ def index():
     # Redirect any GET request on '/' to county select
     else:
         return redirect(url_for('county'))
+
+# Select
+@app.route('/select')
+def select():
+    # Connect to database
+    conn = sqlite3.connect('./db/incarceration.db')
+
+    # Query the database
+    state_data =  pd.read_sql_query(f"""SELECT DISTINCT state 
+                                    FROM incarceration;
+                                    """, conn)
+
+    # Query result is a list of lists. 
+    # The following function captures the state names
+    states = []
+    
+    for state in state_data.values:
+        for item in state:
+            states.append(item)
+
+    return render_template('select.html', states=states)
+
+@app.route('/select/<string:state>/')
+def article(state):
+    return render_template('select_county.html', state=state)
 
 # Select county form
 @app.route("/county")
