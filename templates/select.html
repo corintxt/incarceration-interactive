@@ -5,11 +5,14 @@
 <h1>Select State</h1>
 
 <div class="dropdown">
-<select name=state method="GET" action="/select">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        State
+    </button>
+    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
     {% for state in states %}
-    <option value= "{{state}}" SELECTED>{{state}}</option>"
+        <a class="dropdown-item" href="/select/{{state}}">{{state}}</a>
     {% endfor %}
-</select>
+    </div>
 </div>
 
 {% endblock %}

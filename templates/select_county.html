@@ -1,5 +1,14 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <h1>{{state}}</h1>
+<h1>{{state}}</h1>
+
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        State
+    </button>
+    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="/select">{{state}}</a>
+    </div>
+</div>
 {% endblock %}

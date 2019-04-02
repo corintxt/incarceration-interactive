@@ -1,2 +1,6 @@
 .ipynb_checkpoints
 *.db
+__pycache__/
+exploration/
+incarceration-interactive.code-workspace
+plotting-demo.ipynb

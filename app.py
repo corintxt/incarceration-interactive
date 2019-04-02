@@ -56,7 +56,7 @@ def select():
 
     return render_template('select.html', states=states)
 
-@app.route('/select/<string:state>/')
+@app.route('/select/<state>/')
 def article(state):
     return render_template('select_county.html', state=state)
 
