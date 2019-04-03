@@ -9,8 +9,8 @@
         State
     </button>
     <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
-    {% for state in states %}
-        <a class="dropdown-item" href="/select/{{state}}">{{state}}</a>
+    {% for state_name in states %}
+        <a class="dropdown-item" href="/select/{{state_name}}">{{state_name}}</a>
     {% endfor %}
     </div>
 </div>

@@ -1,14 +1,23 @@
 {% extends 'layout.html' %}
 
-{% block body %}
-<h1>{{state}}</h1>
+{% block content %}
 
+<h1>State</h1>
 <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        State
+        {{state_name}}
+    </button>
+</div>
+
+<h1>Select County</h1>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        County
     </button>
     <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="/select">{{state}}</a>
+    {% for county in counties %}
+        <a class="dropdown-item" href="/">{{county}}</a>
+    {% endfor %}
     </div>
 </div>
 {% endblock %}
