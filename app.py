@@ -33,7 +33,7 @@ def index():
 
     # Redirect any GET request on '/' to county select
     else:
-        return redirect(url_for('county'))
+        return redirect(url_for('select'))
 
 # Select
 @app.route('/select')
@@ -53,12 +53,35 @@ def select():
     for state in state_data.values:
         for item in state:
             states.append(item)
+    
+    conn.close()
+
+    session['states'] = states
 
     return render_template('select.html', states=states)
 
-@app.route('/select/<string:state>/')
-def article(state):
-    return render_template('select_county.html', state=state)
+@app.route('/select/<state_name>/')
+def article(state_name):
+    # Connect to database
+    conn = sqlite3.connect('./db/incarceration.db')
+
+    # Query the database
+    county_data =  pd.read_sql_query(f"""SELECT DISTINCT county_name 
+                                    FROM incarceration
+                                    WHERE state = '{state_name}';
+                                    """, conn)
+
+    # Query result is a list of lists. 
+    # The following function captures the county names
+    counties = []
+    
+    for county in county_data.values:
+        for item in county:
+            counties.append(item)
+
+    conn.close()
+
+    return render_template('select.html', state_name=state_name, counties=counties, states=session.get('states'))
 
 # Select county form
 @app.route("/county")

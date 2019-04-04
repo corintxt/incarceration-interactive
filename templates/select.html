@@ -5,11 +5,34 @@
 <h1>Select State</h1>
 
 <div class="dropdown">
-<select name=state method="GET" action="/select">
-    {% for state in states %}
-    <option value= "{{state}}" SELECTED>{{state}}</option>"
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {% if state_name %}
+            {{state_name}}
+        {% else %}
+            State
+        {% endif %}
+    </button>
+    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
+    {% for state_name in states %}
+        <a class="dropdown-item" href="/select/{{state_name}}">{{state_name}}</a>
     {% endfor %}
-</select>
+    </div>
+</div>
+
+<h1>Select County</h1>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        County
+    </button>
+    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
+    {% if counties %}
+        {% for county in counties %}
+            <a class="dropdown-item" href="/">{{county}}</a>
+        {% endfor %}
+    {% else %}
+        <a class="dropdown-item" href="">County</a>
+    {% endif %}
+    </div>
 </div>
 
 {% endblock %}
