@@ -33,7 +33,7 @@ def index():
 
     # Redirect any GET request on '/' to county select
     else:
-        return redirect(url_for('county'))
+        return redirect(url_for('select'))
 
 # Select
 @app.route('/select')
@@ -55,6 +55,8 @@ def select():
             states.append(item)
     
     conn.close()
+
+    session['states'] = states
 
     return render_template('select.html', states=states)
 
@@ -79,7 +81,7 @@ def article(state_name):
 
     conn.close()
 
-    return render_template('select_county.html', state_name=state_name, counties=counties)
+    return render_template('select.html', state_name=state_name, counties=counties, states=session.get('states'))
 
 # Select county form
 @app.route("/county")
