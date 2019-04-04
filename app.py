@@ -6,14 +6,15 @@ import sqlite3
 
 app = Flask(__name__)
 
-def read_county_from_db(county_name):
+def read_county_from_db(state_name, county_name):
     # Connect to database
     conn = sqlite3.connect('./db/incarceration.db')
 
     #Query the database
     data =  pd.read_sql_query(f"""SELECT *
                                     FROM incarceration
-                                    WHERE county_name = '{county_name}';
+                                    WHERE county_name = '{county_name}'
+                                    AND state = '{state_name}';
                                     """, conn)
     
     # Close connection
@@ -26,8 +27,6 @@ def read_county_from_db(county_name):
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        county = request.form['county_name']
-        session['current_county'] = county
 
         return render_template('county_data.html')
 
@@ -61,7 +60,7 @@ def select():
     return render_template('select.html', states=states)
 
 @app.route('/select/<state_name>/')
-def article(state_name):
+def show_state(state_name):
     # Connect to database
     conn = sqlite3.connect('./db/incarceration.db')
 
@@ -81,7 +80,17 @@ def article(state_name):
 
     conn.close()
 
+    session['counties'] = counties
+
     return render_template('select.html', state_name=state_name, counties=counties, states=session.get('states'))
+
+@app.route('/select/<state_name>/<county_name>')
+def show_county(state_name, county_name):
+    session['current_county'] = county_name
+    session['current_state'] = state_name
+
+    return render_template('select.html', state_name=state_name, county_name=county_name,
+                            counties=session.get('counties'), states=session.get('states'))
 
 # Select county form
 @app.route("/county")
@@ -95,7 +104,7 @@ HEIGHT = 300
 
 @app.route("/bar")
 def data_bar():
-    county_data = read_county_from_db(session.get('current_county'))
+    county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
     # Create the chart
     chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='lightgreen').encode(
@@ -108,7 +117,7 @@ def data_bar():
 
 @app.route("/pretrial")
 def pretrial_jail_chart():
-    county_data = read_county_from_db(session.get('current_county'))
+    county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
     chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_area(color='lightblue').encode(
         X('year:O', axis=Axis(title='Year')),

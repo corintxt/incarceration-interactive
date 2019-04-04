@@ -22,17 +22,27 @@
 <h1>Select County</h1>
 <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        County
+        {% if county_name %}
+            {{county_name}}
+        {% else %}
+            County
+        {% endif %}
     </button>
     <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
     {% if counties %}
         {% for county in counties %}
-            <a class="dropdown-item" href="/">{{county}}</a>
+            <a class="dropdown-item" href="/select/{{state_name}}/{{county}}">{{county}}</a>
         {% endfor %}
     {% else %}
         <a class="dropdown-item" href="">County</a>
     {% endif %}
     </div>
+
+{% if state_name and county_name %}
+<form action="/" method="POST">
+    <input type="submit">
+</form>
+{% endif %}
 </div>
 
 {% endblock %}
