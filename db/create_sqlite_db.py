@@ -11,10 +11,10 @@ crsr = connection.cursor()
 # Add data to sqlite database
 df = pd.read_csv('./data/incarceration_trends.csv')
 
+# SQL command to create a table in the database 
 df.to_sql("incarceration", connection, if_exists="replace")
 
 # Check to confirm all is working
-# SQL command to create a table in the database 
 sql_command = """SELECT *
 FROM incarceration
 WHERE county_name = 'Alameda County';

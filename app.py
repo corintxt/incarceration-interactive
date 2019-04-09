@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
+import altair as alt
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
 
@@ -89,6 +90,18 @@ def show_county(state_name, county_name):
     session['current_county'] = county_name
     session['current_state'] = state_name
 
+    conn = sqlite3.connect('./db/incarceration.db')
+
+    fips = pd.read_sql_query(f"""SELECT DISTINCT fips 
+                                    FROM incarceration
+                                    WHERE state = '{state_name}'
+                                    AND county_name = '{county_name}';
+                                    """, conn)
+
+    conn.close()
+
+    session['fips'] = str(fips.values[0][0]) #unpack list of lists
+
     return render_template('select.html', state_name=state_name, county_name=county_name,
                             counties=session.get('counties'), states=session.get('states'))
 
@@ -126,6 +139,31 @@ def pretrial_jail_chart():
     title='Pre-trial jail population in {}'.format(session.get('current_county'))
     )
     return chart.to_json()
+
+@app.route("/map")
+def draw_map():
+    fips = session.get('fips')
+    state_id = int(str(fips)[0:-3])
+
+    states_topo = alt.topo_feature('https://raw.githubusercontent.com/vega/vega-datasets/master/data/us-10m.json', feature='states')
+    counties_topo = alt.topo_feature('https://raw.githubusercontent.com/vega/vega-datasets/master/data/us-10m.json', feature='counties')
+
+
+    state_map = alt.Chart(states_topo).mark_geoshape(
+                fill='lightgrey',
+                stroke='white'
+            ).transform_filter((alt.datum.id == state_id))
+
+    county_map = alt.Chart(counties_topo).mark_geoshape(
+                fill='red',
+                stroke='white'
+            ).transform_filter((alt.datum.id == int(fips)))
+
+    chart = alt.layer(state_map, county_map)
+
+    return chart.to_json()
+
+
 
 if __name__ == '__main__':
     app.secret_key = 'very secret key' #Fix this later!
