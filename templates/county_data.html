@@ -1,32 +1,44 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<div class="chart-container">
 
-<div class="charts text-center">
-  <div class="row"><div id="map"></div></div>
-  <div id="vis-tooltip" class="vg-tooltip"></div>
-</div>
+  <div class="chart-header text-center">
+    <h1>
+      State: {{ session.get('current_state') }}
+    </h1>
+    <h2>
+      County: {{ session.get('current_county') }}
+    </h2>
+  </div>
 
-<hr>
-
-<div class="charts text-center">
-    <div class="row"><div id="bar"></div></div>
+  <div class="charts text-center">
+    <div class="row"><div id="map"></div></div>
     <div id="vis-tooltip" class="vg-tooltip"></div>
-</div>
+  </div>
 
-<hr>
+  <hr>
 
-<div class="charts text-center">
-    <div class="row"><div id="pretrial"></div></div>
-    <div id="vis-tooltip" class="vg-tooltip"></div>
-</div>
+  <div class="charts text-center">
+      <div class="row"><div id="bar"></div></div>
+      <div id="vis-tooltip" class="vg-tooltip"></div>
+  </div>
 
-<hr>
+  <hr>
 
-<div class="charts text-center">
-    <div class="row">
-      <a href="/select" class="btn btn-secondary" role="button">View another county</a>
-    </div>
+  <div class="charts text-center">
+      <div class="row"><div id="pretrial"></div></div>
+      <div id="vis-tooltip" class="vg-tooltip"></div>
+  </div>
+
+  <hr>
+
+  <div class="charts text-center">
+      <div class="row">
+        <a href="/select" class="btn btn-secondary" role="button">View another county</a>
+      </div>
+  </div>
+
 </div>
 
 <!-- Render Charts -->

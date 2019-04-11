@@ -1,3 +1,41 @@
+/***** Navbar *****/
+.navbar-nav {
+    flex-direction: row;
+    /* maybe override for mobile? */
+}
+
+nav h3 {
+    padding: 20px;
+}
+
+nav li {
+    padding: 5px;
+}
+
+
+/***** Charts *****/
+
+.chart-container {
+    padding-top: 20px;
+}
+
+.row {
+    display: inline;
+}
+
+
+
+/**** Selection form ****/
+.select-container {
+    background-color: lightgrey;
+    margin: 10%;
+}
+
+.select-form {
+    padding: 5%;
+    background-color: lightsteelblue;
+}
+
 .scrollable-menu {
     height: auto;
     max-height: 200px;
