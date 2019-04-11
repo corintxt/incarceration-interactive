@@ -149,20 +149,22 @@ def draw_map():
     counties_topo = alt.topo_feature('https://raw.githubusercontent.com/vega/vega-datasets/master/data/us-10m.json', feature='counties')
 
 
-    state_map = alt.Chart(states_topo).mark_geoshape(
+    state_map = Chart(data=states_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
                 fill='lightgrey',
                 stroke='white'
             ).transform_filter((alt.datum.id == state_id))
 
-    county_map = alt.Chart(counties_topo).mark_geoshape(
+    county_map = Chart(data=counties_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
                 fill='red',
                 stroke='white'
             ).transform_filter((alt.datum.id == int(fips)))
 
-    chart = alt.layer(state_map, county_map)
+    chart = state_map + county_map
 
+
+    print(chart.to_dict())
+    
     return chart.to_json()
-
 
 
 if __name__ == '__main__':
