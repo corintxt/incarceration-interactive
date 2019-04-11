@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="chart-container">
 
-  <div class="chart-header text-center">
+<div class="chart-header text-center">
     <h1>
       State: {{ session.get('current_state') }}
     </h1>
@@ -11,6 +10,8 @@
       County: {{ session.get('current_county') }}
     </h2>
   </div>
+
+<div class="chart-container">
 
   <div class="charts text-center">
     <div class="row"><div id="map"></div></div>

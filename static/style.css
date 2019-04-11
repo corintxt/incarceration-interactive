@@ -1,3 +1,14 @@
+
+/*** Body ****/
+body {
+    background-color: #e4e4e4;
+    background-image: url("/static/prison-fence.jpg");
+    background-attachment: fixed;
+    font-family: 'Oswald', sans-serif;
+
+}
+
+
 /***** Navbar *****/
 .navbar-nav {
     flex-direction: row;
@@ -12,11 +23,18 @@ nav li {
     padding: 5px;
 }
 
-
 /***** Charts *****/
+
+.chart-header {
+    margin: 30px auto 0px auto;
+    color: #2f3142;
+    max-width: 40%;
+    border-bottom: 2px solid lightgrey;
+}
 
 .chart-container {
     padding-top: 20px;
+    background-color: #2f2f2f
 }
 
 .row {
@@ -24,20 +42,40 @@ nav li {
 }
 
 
-
 /**** Selection form ****/
+
+.home-title {
+    margin: 30px auto 0px auto;
+    max-width: 40%;
+    color: #2f3142;
+    border-bottom: 2px solid #2f3142;
+
+}
+
+
 .select-container {
-    background-color: lightgrey;
-    margin: 10%;
+    color: #ffffff;
+    background-color: #2f2f2f;
+    margin-top: 5%;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 5%;
 }
 
 .select-form {
-    padding: 5%;
-    background-color: lightsteelblue;
+    padding: 2%;
+    border-radius: 5px;
+    background-color: #2f3142;
 }
 
 .scrollable-menu {
     height: auto;
     max-height: 200px;
     overflow-x: hidden;
+}
+
+.btn-primary {
+    margin-top: 5px;
+    background-color: #343a40;
+    border-color: lightgrey;
 }

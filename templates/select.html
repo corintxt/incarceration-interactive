@@ -2,6 +2,11 @@
 
 {% block content %}
 
+<div class="home-title text-center">
+    <h1>Incarceration in </h1>
+    <h1>America.</h1>
+</div>
+
 <div class="select-container">
 
     <div class="intro">
@@ -58,7 +63,7 @@
 
         {% if state_name and county_name %}
         <form action="/" method="POST">
-            <input type="submit">
+            <input class="btn btn-primary" type="submit">
         </form>
         {% endif %}
 
