@@ -159,13 +159,9 @@ def draw_map():
                 stroke='white'
             ).transform_filter((alt.datum.id == int(fips)))
 
-    chart = state_map + county_map
-
-
-    print(chart.to_dict())
+    chart = alt.layer(state_map, county_map)
     
     return chart.to_json()
-
 
 if __name__ == '__main__':
     app.secret_key = 'very secret key' #Fix this later!
