@@ -23,13 +23,31 @@ def read_county_from_db(state_name, county_name):
 
     return data
 
+
+def flatten(series):
+    '''Flattens list of lists returned by unpacking pandas series.values
+    after SQL query'''
+    flat_list = [item for sublist in series.values for item in sublist]
+    return flat_list
+    
+
 ### Routing stuff
 # Index page
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
-        return render_template('county_data.html',data=county_data)
+        conn = sqlite3.connect('./db/incarceration.db')
+        
+        population =  pd.read_sql_query(f"""SELECT total_pop, total_jail_pop, total_prison_pop
+                                    FROM incarceration
+                                    WHERE county_name = '{session.get('current_county')}'
+                                    AND state = '{session.get('current_state')}'
+                                    AND year = 2016;
+                                    """, conn)
+
+        total_pop = "{:,}".format(flatten(population)[0])
+
+        return render_template('county_data.html', total_population=total_pop)
 
     # Redirect any GET request on '/' to county select
     else:
@@ -46,13 +64,7 @@ def select():
                                     FROM incarceration;
                                     """, conn)
 
-    # Query result is a list of lists. 
-    # The following function captures the state names
-    states = []
-    
-    for state in state_data.values:
-        for item in state:
-            states.append(item)
+    states = flatten(state_data)
     
     conn.close()
 
@@ -71,14 +83,8 @@ def show_state(state_name):
                                     WHERE state = '{state_name}';
                                     """, conn)
 
-    # Query result is a list of lists. 
-    # The following function captures the county names
-    counties = []
+    counties = flatten(county_data)
     
-    for county in county_data.values:
-        for item in county:
-            counties.append(item)
-
     conn.close()
 
     session['counties'] = counties
