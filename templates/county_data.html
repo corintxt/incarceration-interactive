@@ -36,6 +36,13 @@
   <hr>
 
   <div class="charts text-center">
+    <div class="row"><div id="multiline"></div></div>
+    <div id="vis-tooltip" class="vg-tooltip"></div>
+  </div>
+
+  <hr>
+
+  <div class="charts text-center">
       <div class="row"><div id="pretrial"></div></div>
       <div id="vis-tooltip" class="vg-tooltip"></div>
   </div>
@@ -65,6 +72,7 @@
   }
     //tells vega where to find the JSON for each chart type
     parse("/bar", "bar")
+    parse("/multiline", "multiline")
     parse("/pretrial", "pretrial")
     parse("/map", "map")
 
