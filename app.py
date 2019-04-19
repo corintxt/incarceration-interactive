@@ -28,8 +28,8 @@ def read_county_from_db(state_name, county_name):
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-
-        return render_template('county_data.html')
+        county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
+        return render_template('county_data.html',data=county_data)
 
     # Redirect any GET request on '/' to county select
     else:
