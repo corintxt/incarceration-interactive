@@ -219,6 +219,10 @@ def multiline():
     return chart.to_json()
 
 
+@app.route("/scatter")
+def county_scatter():
+
+
 @app.route("/pretrial")
 def pretrial_jail_chart():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
@@ -250,7 +254,7 @@ def draw_map():
                 stroke='white'
             ).transform_filter((alt.datum.id == int(fips)))
 
-    chart = alt.layer(state_map, county_map)
+    chart = alt.layer(state_map, county_map).configure_view(strokeWidth=0)
     
     return chart.to_json()
 
