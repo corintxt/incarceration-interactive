@@ -4,6 +4,7 @@ import pandas as pd
 import altair as alt
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
+import chart_processor
 
 app = Flask(__name__)
 
@@ -23,13 +24,31 @@ def read_county_from_db(state_name, county_name):
 
     return data
 
+
+def flatten(series):
+    '''Flattens list of lists returned by unpacking pandas series.values
+    after SQL query'''
+    flat_list = [item for sublist in series.values for item in sublist]
+    return flat_list
+    
+
 ### Routing stuff
 # Index page
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
+        conn = sqlite3.connect('./db/incarceration.db')
+        
+        population =  pd.read_sql_query(f"""SELECT total_pop, total_jail_pop, total_prison_pop
+                                    FROM incarceration
+                                    WHERE county_name = '{session.get('current_county')}'
+                                    AND state = '{session.get('current_state')}'
+                                    AND year = 2016;
+                                    """, conn)
 
-        return render_template('county_data.html')
+        total_pop = "{:,}".format(flatten(population)[0])
+
+        return render_template('county_data.html', total_population=total_pop)
 
     # Redirect any GET request on '/' to county select
     else:
@@ -46,13 +65,7 @@ def select():
                                     FROM incarceration;
                                     """, conn)
 
-    # Query result is a list of lists. 
-    # The following function captures the state names
-    states = []
-    
-    for state in state_data.values:
-        for item in state:
-            states.append(item)
+    states = flatten(state_data)
     
     conn.close()
 
@@ -71,14 +84,8 @@ def show_state(state_name):
                                     WHERE state = '{state_name}';
                                     """, conn)
 
-    # Query result is a list of lists. 
-    # The following function captures the county names
-    counties = []
+    counties = flatten(county_data)
     
-    for county in county_data.values:
-        for item in county:
-            counties.append(item)
-
     conn.close()
 
     session['counties'] = counties
@@ -127,6 +134,90 @@ def data_bar():
     title='Prison population in {}'.format(session.get('current_county'))
     )
     return chart.to_json()
+
+# Function to avoid errors trying to round null data values for the multiline chart
+def to_percentage(num):
+    if isinstance(num, float):
+        num = num*100
+        return round(num, 0)
+    else:
+        pass
+
+@app.route("/multiline")
+def multiline():
+    county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
+
+    source = chart_processor.process_data(county_data)
+
+    # Create a column for the label
+    source['value_label'] = source['value'].apply(lambda x: to_percentage(x))
+
+    # Create a selection that chooses the nearest point & selects based on x-value
+    nearest = alt.selection(type='single', nearest=True, on='mouseover',
+                            fields=['year'], empty='none')
+
+
+    demographics = ['Total white population (15-64)',
+               'White prison population',
+               'White jail population',
+               'Total black population (15-64)',
+               'Black prison population',
+               'Black jail population']
+
+    # Define color scheme blues and reds
+    hex_colors = ['#2720e3',
+                '#58d8f0',
+                '#18a8c0',
+                '#db3232',
+                '#cc7777',
+                '#ff9000']
+
+    # Combine demographic and colors into a dictionary
+    demographic_labels = dict(zip(demographics, hex_colors))
+
+    # The basic line
+    line = alt.Chart().mark_line(interpolate='basis').encode(
+        x=alt.X('year:O', axis=alt.Axis(title='Year')),
+        y=alt.Y('value:Q', axis=alt.Axis(format='%', title='Population')),
+        color=alt.Color('demographic',
+                scale=alt.Scale(domain=list(demographic_labels.keys()),
+                                range=list(demographic_labels.values())
+                                )
+                ),
+    )
+
+    # Transparent selectors across the chart. This is what tells us
+    # the x-value of the cursor
+    selectors = alt.Chart().mark_point().encode(
+        x='year:O',
+        opacity=alt.value(0),
+    ).add_selection(
+        nearest
+    )
+
+    # Draw points on the line, and highlight based on selection
+    points = line.mark_point().encode(
+        opacity=alt.condition(nearest, alt.value(1), alt.value(0))
+    )
+
+    # Draw text labels near the points, and highlight based on selection
+    text = line.mark_text(align='left', dx=5, dy=-5).encode(
+        text=alt.condition(nearest, 'value_label:Q', alt.value(' '))
+    )
+
+    # Draw a rule at the location of the selection
+    rules = alt.Chart().mark_rule(color='gray').encode(
+        x='year:O',
+    ).transform_filter(
+        nearest
+    )
+
+    # Put the five layers into a chart and bind the data
+    chart = alt.layer(line, selectors, points, rules, text,
+            data=source, width=600, height=300)
+    
+    return chart.to_json()
+
 
 @app.route("/pretrial")
 def pretrial_jail_chart():
