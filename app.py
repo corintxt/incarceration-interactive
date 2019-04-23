@@ -135,13 +135,11 @@ def data_bar():
     )
     return chart.to_json()
 
-
-# Function to avoid errors trying to round null data values
+# Function to avoid errors trying to round null data values for the multiline chart
 def to_percentage(num):
-    if isinstance(num, int):
-        num = num*100 
-        num.round(0)
-        return num
+    if isinstance(num, float):
+        num = num*100
+        return round(num, 0)
     else:
         pass
 

@@ -29,6 +29,6 @@ def process_data(dataframe):
                        value_vars=values)
 
     # Create a new column with a lambda function
-    melt['demographic'] = melt.apply (lambda row: label_demographics(row), axis=1)
+    melt['demographic'] = melt.apply(lambda row: label_demographics(row), axis=1)
 
     return melt

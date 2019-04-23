@@ -13,7 +13,7 @@
 
 <div class="chart-container">
 
-  <div class="charts text-center">
+  <div class="charts text-center" id="mappin">
     <div class="row"><div id="map"></div></div>
     <div id="vis-tooltip" class="vg-tooltip"></div>
   </div>
@@ -59,17 +59,21 @@
 
 <!-- Render Charts -->
 <script type="text/javascript">
+
   function parse(url, div) {
     var opt = {
       mode: "vega-lite",
       renderer: "svg",
       actions: {export: true, source: false, editor: false}
     };
+
     vegaEmbed("#"+div, url, opt, function(error, result) {
       // result.view is the Vega View, url is the original Vega-Lite specification
       vegaTooltip.vegaLite(result.view, url);
+  
     });
   }
+  
     //tells vega where to find the JSON for each chart type
     parse("/bar", "bar")
     parse("/multiline", "multiline")
