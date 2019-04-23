@@ -11,3 +11,4 @@ A Recurse Center project by Corin Faife and Zoe Statman-Weil.
 
 ## Data notes / to-do
 * When the value of prison data is `null` for a given county we should not show a chart. (Example: Benton County)
+* This also applies to the scatter chart (which is based on total prison population.)

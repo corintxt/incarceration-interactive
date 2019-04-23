@@ -219,9 +219,54 @@ def multiline():
     return chart.to_json()
 
 
+# Called below in `scatter` route
+def test_nulls_for_year(year, state, conn):
+    percent_nulls = pd.read_sql_query(f"""SELECT
+                                   100.0 * count(total_prison_pop) / count(1) as PercentNotNull
+                                FROM
+                                   incarceration
+                                WHERE state = '{state}'
+                                AND year = {year};
+                                """, conn)
+    return percent_nulls
+
+
 @app.route("/scatter")
 def county_scatter():
+    state_name = session.get('current_state')
+        
+    #Connect to the database
+    conn = sqlite3.connect('./db/incarceration.db')
 
+    year_2016_nulls = test_nulls_for_year(2016, state_name, conn)
+
+    year_2015_nulls = test_nulls_for_year(2015, state_name, conn)
+
+    year = 2016 # default year
+
+    # Test to see if 2015 has more non-null values
+    if year_2016_nulls.iloc[0]['PercentNotNull'] < year_2015_nulls.iloc[0]['PercentNotNull']:
+            year = 2015
+        
+    all_counties_prison_pop = pd.read_sql_query(f"""SELECT county_name, total_pop, total_prison_pop, urbanicity
+                                    FROM
+                                    incarceration
+                                    WHERE state = '{state_name}'
+                                    AND year = {year};
+                                    """, conn)
+
+    # Close connection
+    conn.close()
+
+    chart = Chart(data=all_counties_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=70).encode(
+        X('total_pop', axis=Axis(title='Total population')),
+        Y('total_prison_pop', axis=Axis(title='Total prison')),
+        color='urbanicity',
+        tooltip=['county_name', 'total_pop', 'total_prison_pop']
+    ).properties(
+    title='Statewide prison population {}, {}'.format(year, state_name)).interactive()
+
+    return chart.to_json()
 
 @app.route("/pretrial")
 def pretrial_jail_chart():
