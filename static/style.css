@@ -37,6 +37,16 @@ nav li {
     background-color: #9c9c9c
 }
 
+.charts {
+    margin-top: 3%;
+}
+
+.chart-description {
+    width: 60%;
+    margin: auto;
+    background-color: #e0e0e0;
+}
+
 .row {
     display: inline;
 }
