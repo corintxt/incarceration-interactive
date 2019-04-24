@@ -40,7 +40,8 @@
     <div class="text-center chart-description">
       <p>Here is a paragraph with some explanatory text about prison population in <code>{{ session.get('current_county') }}</code>.</p>
       <p>It will make the context clearer for the reader.</p>
-      <p>There will be further definitions when we have written them.</p>
+      <p>The prison population in <strong>{{ session.get('current_county') }}</strong> reached its peak 
+        in <strong>{{ max_prison_pop_year }}</strong> with <strong>{{ max_prison_pop }}</strong> inmates.</p>
     </div>
   </div>
 
