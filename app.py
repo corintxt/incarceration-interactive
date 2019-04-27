@@ -127,7 +127,7 @@ def data_bar():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
     # Create the chart
-    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='lightgreen').encode(
+    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#4d7d4d').encode(
         X('year:O', axis=Axis(title='Year')),
         Y('total_prison_pop', axis=Axis(title='Total Prison Population'))
     ).properties(
@@ -290,7 +290,7 @@ def draw_map():
 
 
     state_map = Chart(data=states_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
-                fill='lightgrey',
+                fill='#827f7f',
                 stroke='white'
             ).transform_filter((alt.datum.id == state_id))
 

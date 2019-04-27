@@ -25,6 +25,10 @@ nav li {
 
 /***** Charts *****/
 
+svg {
+    width: 100%;
+}
+
 .chart-header {
     margin: 30px auto 0px auto;
     color: #2f3142;
@@ -34,7 +38,8 @@ nav li {
 
 .chart-container {
     padding-top: 20px;
-    background-color: #9c9c9c
+    padding-bottom: 35px;
+    background-color: #dcdcdc
 }
 
 .charts {
@@ -44,7 +49,8 @@ nav li {
 .chart-description {
     width: 60%;
     margin: auto;
-    background-color: #e0e0e0;
+    padding: 10px;
+    background-color: #d0d0d0;
 }
 
 .row {
