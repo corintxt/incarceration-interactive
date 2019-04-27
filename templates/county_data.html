@@ -35,6 +35,8 @@
   <div class="text-center chart-description">
     <p>First we will provide some introductory information on the difference between
        prisons and jails, because it needs explanation.</p>
+    <p>Across the U.S., there were <a href="https://www.vera.org/publications/people-in-prison-in-2018">450 people in prison for every 100,000 residents in 2018</a>. 
+      This compares to [DATA] in China, and [DATA] in Sweden.</p>  
   </div>
 
   <hr>
@@ -49,8 +51,7 @@
         <div id="vis-tooltip" class="vg-tooltip"></div>
 
     <div class="text-center chart-description">
-      <p>Here is a paragraph with some explanatory text about prison population in <code>{{ session.get('current_county') }}</code>.</p>
-      <p>It will make the context clearer for the reader.</p>
+      <p>The chart above shows the change in prison population in <strong>{{ session.get('current_county') }}</strong> over time.</p>
       <p>The prison population in <strong>{{ session.get('current_county') }}</strong> reached its peak 
         in <strong>{{ max_prison_pop_year }}</strong> with <strong>{{ max_prison_pop }}</strong> inmates.</p>
     </div>
@@ -62,10 +63,13 @@
   </div>
   <div class="text-center chart-description">
     <p>The chart above shows the prison population compared to total population
-      for each county in <code>{{ session.get('current_state') }}</code>
+      for each county in <strong>{{ session.get('current_state') }}</strong> state. 
+      Data for <strong>{{ session.get('current_county') }} </strong> is represented by a purple square.
+
     </p>
-    <p>A null value for total prison population on this chart indicates that the state
-      declined to provide the requested information.</p>
+    <p>Hovering over a dot provides additional information. Use the mouse wheel to zoom in and out of the chart.</p>
+    <p><em>(NB: A null value for total prison population on this chart indicates that the state
+      declined to provide the requested information.)</em></p>
   </div>
 
   <hr>

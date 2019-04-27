@@ -290,17 +290,18 @@ def county_scatter():
     conn.close()
 
     state_chart = Chart(data=all_counties_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=70).encode(
-        X('total_pop', axis=Axis(title='Total population')),
-        Y('total_prison_pop', axis=Axis(title='Total prison')),
+        X('total_pop', axis=Axis(title='County population')),
+        Y('total_prison_pop', axis=Axis(title='Total prison population')),
         color='urbanicity',
+        size='total_pop',
         tooltip=['county_name', 'total_pop', 'total_prison_pop']
     ).properties(
     title='Statewide prison population {}, {}'.format(year, state_name)).interactive()
 
-    county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=300).encode(
-        X('total_pop', axis=Axis(title='Total population')),
-        Y('total_prison_pop', axis=Axis(title='Total prison')),
-        color='urbanicity',
+    county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(size=250,color='purple').encode(
+        X('total_pop', axis=Axis(title='County population')),
+        Y('total_prison_pop', axis=Axis(title='Total prison population')),
+        # color='urbanicity',
         tooltip=['county_name', 'total_pop', 'total_prison_pop']
     ).interactive()
 
