@@ -39,16 +39,35 @@ def index():
     if request.method == 'POST':
         conn = sqlite3.connect('./db/incarceration.db')
         
-        population =  pd.read_sql_query(f"""SELECT total_pop, total_jail_pop, total_prison_pop
+        population =  pd.read_sql_query(f"""SELECT year, total_pop, total_jail_pop, total_prison_pop
                                     FROM incarceration
                                     WHERE county_name = '{session.get('current_county')}'
                                     AND state = '{session.get('current_state')}'
-                                    AND year = 2016;
                                     """, conn)
 
-        total_pop = "{:,}".format(flatten(population)[0])
 
-        return render_template('county_data.html', total_population=total_pop)
+        # Get total population in year 2016
+        total_pop = int(population[population.year==2015].total_pop)
+        total_pop_formatted = "{:,}".format(total_pop)
+
+        # get max jail population, and associated years
+        max_jail_df = population.loc[population['total_jail_pop'].idxmax()]
+        max_jail_pop = int(max_jail_df.total_jail_pop)
+        max_jail_pop_formatted = "{:,}".format(max_jail_pop)
+        max_jail_pop_year = int(max_jail_df.year)
+        
+        # get max prison population, and associated years
+        max_prison_df = population.loc[population['total_prison_pop'].idxmax()]
+        max_prison_pop = int(max_prison_df.total_prison_pop)
+        max_prison_pop_formatted = "{:,}".format(max_prison_pop)
+        max_prison_pop_year = int(max_prison_df.year)
+
+        return render_template('county_data.html', 
+                                total_population=total_pop_formatted, 
+                                max_jail_pop=max_jail_pop_formatted,
+                                max_jail_pop_year=max_jail_pop_year,
+                                max_prison_pop=max_prison_pop_formatted,
+                                max_prison_pop_year=max_prison_pop_year)
 
     # Redirect any GET request on '/' to county select
     else:
@@ -234,10 +253,12 @@ def test_nulls_for_year(year, state, conn):
 @app.route("/scatter")
 def county_scatter():
     state_name = session.get('current_state')
+    county_name = session.get('current_county')
         
     #Connect to the database
     conn = sqlite3.connect('./db/incarceration.db')
 
+    # Determine whether 2015 or 2016 has more data
     year_2016_nulls = test_nulls_for_year(2016, state_name, conn)
 
     year_2015_nulls = test_nulls_for_year(2015, state_name, conn)
@@ -248,6 +269,7 @@ def county_scatter():
     if year_2016_nulls.iloc[0]['PercentNotNull'] < year_2015_nulls.iloc[0]['PercentNotNull']:
             year = 2015
         
+    # Select prison population data for the entire state for the selected year
     all_counties_prison_pop = pd.read_sql_query(f"""SELECT county_name, total_pop, total_prison_pop, urbanicity
                                     FROM
                                     incarceration
@@ -255,16 +277,34 @@ def county_scatter():
                                     AND year = {year};
                                     """, conn)
 
+    # Select prison population data for the specific county for the selected year
+    county_prison_pop = pd.read_sql_query(f"""SELECT county_name, total_pop, total_prison_pop, urbanicity
+                                    FROM
+                                    incarceration
+                                    WHERE state = '{state_name}'
+                                    AND county_name = '{county_name}'
+                                    AND year = {year};
+                                    """, conn)
+        
     # Close connection
     conn.close()
 
-    chart = Chart(data=all_counties_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=70).encode(
+    state_chart = Chart(data=all_counties_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=70).encode(
         X('total_pop', axis=Axis(title='Total population')),
         Y('total_prison_pop', axis=Axis(title='Total prison')),
         color='urbanicity',
         tooltip=['county_name', 'total_pop', 'total_prison_pop']
     ).properties(
     title='Statewide prison population {}, {}'.format(year, state_name)).interactive()
+
+    county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=300).encode(
+        X('total_pop', axis=Axis(title='Total population')),
+        Y('total_prison_pop', axis=Axis(title='Total prison')),
+        color='urbanicity',
+        tooltip=['county_name', 'total_pop', 'total_prison_pop']
+    ).interactive()
+
+    chart = alt.layer(state_chart,county_chart)
 
     return chart.to_json()
 
