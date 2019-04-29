@@ -177,65 +177,101 @@ def multiline():
 
 
     demographics = ['Total white population (15-64)',
-               'White prison population',
-               'White jail population',
                'Total black population (15-64)',
-               'Black prison population',
-               'Black jail population']
+               'White jail population',
+               'Black jail population',
+               'White prison population',
+               'Black prison population']
 
-    # Define color scheme blues and reds
-    hex_colors = ['#2720e3',
-                '#58d8f0',
-                '#18a8c0',
-                '#db3232',
-                '#cc7777',
-                '#ff9000']
+    # Define color pairs matched to above demographics
+    hex_colors = ['#cccec1',
+                '#272727',
+                '#cccec1',
+                '#272727',
+                '#cccec1',
+                '#272727']
 
     # Combine demographic and colors into a dictionary
     demographic_labels = dict(zip(demographics, hex_colors))
 
-    # The basic line
-    line = alt.Chart().mark_line(interpolate='basis').encode(
-        x=alt.X('year:O', axis=alt.Axis(title='Year')),
-        y=alt.Y('value:Q', axis=alt.Axis(format='%', title='Population')),
-        color=alt.Color('demographic',
-                scale=alt.Scale(domain=list(demographic_labels.keys()),
-                                range=list(demographic_labels.values())
-                                )
-                ),
+    # Create pairs of variables to be used in the stacked charts
+    wb_general = ['perc_white_total_pop', 'perc_black_total_pop']
+    wb_jail = ['perc_white_jail_pop', 'perc_black_jail_pop']
+    wb_prison = ['perc_white_prison_pop', 'perc_black_prison_pop']
+
+    # General population chart
+    total_wb_population = alt.Chart(source[source['variable'].isin(wb_general)], height=150, width=500).mark_area().encode(
+    x=alt.X("year:O", axis=Axis(title='Year')),
+    y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
+    color=alt.Color('demographic:N', legend=None,
+             scale=alt.Scale(domain=list(demographic_labels.keys()),
+                            range=list(demographic_labels.values())
+                            )
+             )
+    ).properties(
+        title='Ratio of black:white residents in total county population (15-64)'
     )
 
-    # Transparent selectors across the chart. This is what tells us
-    # the x-value of the cursor
-    selectors = alt.Chart().mark_point().encode(
-        x='year:O',
-        opacity=alt.value(0),
-    ).add_selection(
-        nearest
+    # White/black jail population chart
+    total_wb_jail = alt.Chart(source[source['variable'].isin(wb_jail)], height=150, width=500).mark_area().encode(
+    x=alt.X("year:O", axis=Axis(title='Year')),
+    y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
+    color=alt.Color('demographic:N', legend=None,
+             scale=alt.Scale(domain=list(demographic_labels.keys()),
+                            range=list(demographic_labels.values())
+                            )
+             )
+    ).properties(
+        title='Ratio of black:white inmates in jail population'
     )
 
-    # Draw points on the line, and highlight based on selection
-    points = line.mark_point().encode(
-        opacity=alt.condition(nearest, alt.value(1), alt.value(0))
+    total_wb_prison = alt.Chart(source[source['variable'].isin(wb_prison)], height=150, width=500).mark_area().encode(
+    x=alt.X("year:O", axis=Axis(title='Year')),
+    y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
+    color=alt.Color('demographic:N', legend=None,
+             scale=alt.Scale(domain=list(demographic_labels.keys()),
+                            range=list(demographic_labels.values())
+                            )
+             )
+    ).properties(
+        title='Ratio of black:white inmates in prison population'
     )
 
-    # Draw text labels near the points, and highlight based on selection
-    text = line.mark_text(align='left', dx=5, dy=-5).encode(
-        text=alt.condition(nearest, 'value_label:Q', alt.value(' '))
-    )
+    # Concatenate charts
+    chart = alt.vconcat(total_wb_population, total_wb_jail, total_wb_prison)
 
-    # Draw a rule at the location of the selection
-    rules = alt.Chart().mark_rule(color='gray').encode(
-        x='year:O',
-    ).transform_filter(
-        nearest
-    )
+    return chart.to_json()
+
+    # # Transparent selectors across the chart. This is what tells us
+    # # the x-value of the cursor
+    # selectors = alt.Chart().mark_point().encode(
+    #     x='year:O',
+    #     opacity=alt.value(0),
+    # ).add_selection(
+    #     nearest
+    # )
+
+    # # Draw points on the line, and highlight based on selection
+    # points = line.mark_point().encode(
+    #     opacity=alt.condition(nearest, alt.value(1), alt.value(0))
+    # )
+
+    # # Draw text labels near the points, and highlight based on selection
+    # text = line.mark_text(align='left', dx=5, dy=-5).encode(
+    #     text=alt.condition(nearest, 'value_label:Q', alt.value(' '))
+    # )
+
+    # # Draw a rule at the location of the selection
+    # rules = alt.Chart().mark_rule(color='gray').encode(
+    #     x='year:O',
+    # ).transform_filter(
+    #     nearest
+    # )
 
     # Put the five layers into a chart and bind the data
-    chart = alt.layer(line, selectors, points, rules, text,
-            data=source, width=600, height=300)
+    # chart = alt.layer(line, selectors, points, rules, text,
+    #         data=source, width=600, height=300)
     
-    return chart.to_json()
 
 
 # Called below in `scatter` route
