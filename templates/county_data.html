@@ -54,7 +54,7 @@
             <p>The prison population in <strong>{{ session.get('current_county') }}</strong> reached its peak 
             in <strong>{{ max_prison_pop_year }}</strong> with <strong>{{ max_prison_pop }}</strong> inmates.</p>
         {% else %}
-            <p>Prison data is not available for this {{ session.get('current_county') }}.</p>
+            <p>Prison data is not available for {{ session.get('current_county') }}.</p>
         {% endif %}
 
         <p>The jail population in <strong>{{ session.get('current_county') }}</strong> reached its peak in <strong>{{ max_jail_pop_year }}</strong> with <strong>{{ max_jail_pop }}</strong> inmates.</p>  
