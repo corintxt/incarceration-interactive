@@ -222,7 +222,7 @@ def multiline():
                             )
              )
     ).properties(
-        title='Ratio of black:white residents in total county population (15-64)'
+        title='Ratio of white/black residents in total county population (15-64)'
     )
 
     # White/black jail population chart
@@ -235,7 +235,7 @@ def multiline():
                             )
              )
     ).properties(
-        title='Ratio of black:white inmates in jail population'
+        title='Ratio of white/black  inmates in jail population'
     )
 
     total_wb_prison = alt.Chart(source[source['variable'].isin(wb_prison)], height=150, width=500).mark_bar().encode(
@@ -247,7 +247,7 @@ def multiline():
                             )
              )
     ).properties(
-        title='Ratio of black:white inmates in prison population'
+        title='Ratio of white/black  inmates in prison population'
     )
 
     # Concatenate charts
@@ -362,12 +362,17 @@ def county_scatter():
 def pretrial_jail_chart():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
-    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_area(color='lightblue').encode(
+    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_area(
+        color="#08080B",
+        interpolate='step-after',
+        line=True,
+        ).encode(
         X('year:O', axis=Axis(title='Year')),
-        Y('total_jail_pretrial', axis=Axis(title='Number of inmates'))
+        Y('total_jail_pretrial', axis=Axis(title='Number of inmates')),
+        tooltip=['year', 'total_jail_pretrial']        
     ).properties(
     title='Pre-trial jail population in {}'.format(session.get('current_county'))
-    )
+    ).interactive()
     return chart.to_json()
 
 @app.route("/map")
