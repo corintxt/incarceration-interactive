@@ -141,16 +141,29 @@ def county():
 WIDTH = 600
 HEIGHT = 300
 
-@app.route("/bar")
-def data_bar():
+@app.route("/bar_prison")
+def data_bar_prison():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
     # Create the chart
-    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#4d7d4d').encode(
+    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#2f3142').encode(
         X('year:O', axis=Axis(title='Year')),
         Y('total_prison_pop', axis=Axis(title='Total Prison Population'))
     ).properties(
     title='Prison population in {}'.format(session.get('current_county'))
+    )
+    return chart.to_json()
+
+@app.route("/bar_jail")
+def data_bar_jail():
+    county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
+
+    # Create the chart
+    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#444760').encode(
+        X('year:O', axis=Axis(title='Year')),
+        Y('total_jail_pop', axis=Axis(title='Total Jail Population'))
+    ).properties(
+    title='Jail population in {}'.format(session.get('current_county'))
     )
     return chart.to_json()
 
@@ -200,7 +213,7 @@ def multiline():
     wb_prison = ['perc_white_prison_pop', 'perc_black_prison_pop']
 
     # General population chart
-    total_wb_population = alt.Chart(source[source['variable'].isin(wb_general)], height=150, width=500).mark_area().encode(
+    total_wb_population = alt.Chart(source[source['variable'].isin(wb_general)], height=150, width=500).mark_bar().encode(
     x=alt.X("year:O", axis=Axis(title='Year')),
     y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
     color=alt.Color('demographic:N', legend=None,
@@ -213,7 +226,7 @@ def multiline():
     )
 
     # White/black jail population chart
-    total_wb_jail = alt.Chart(source[source['variable'].isin(wb_jail)], height=150, width=500).mark_area().encode(
+    total_wb_jail = alt.Chart(source[source['variable'].isin(wb_jail)], height=150, width=500).mark_bar().encode(
     x=alt.X("year:O", axis=Axis(title='Year')),
     y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
     color=alt.Color('demographic:N', legend=None,
@@ -225,7 +238,7 @@ def multiline():
         title='Ratio of black:white inmates in jail population'
     )
 
-    total_wb_prison = alt.Chart(source[source['variable'].isin(wb_prison)], height=150, width=500).mark_area().encode(
+    total_wb_prison = alt.Chart(source[source['variable'].isin(wb_prison)], height=150, width=500).mark_bar().encode(
     x=alt.X("year:O", axis=Axis(title='Year')),
     y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
     color=alt.Color('demographic:N', legend=None,
