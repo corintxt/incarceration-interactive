@@ -45,9 +45,8 @@ def index():
                                     AND state = '{session.get('current_state')}'
                                     """, conn)
 
-
         # Get total population in year 2016
-        total_pop = int(population[population.year==2015].total_pop)
+        total_pop = int(population[population.year==2016].total_pop)
         total_pop_formatted = "{:,}".format(total_pop)
 
         # get max jail population, and associated years
@@ -62,8 +61,18 @@ def index():
         max_prison_pop_formatted = "{:,}".format(max_prison_pop)
         max_prison_pop_year = int(max_prison_df.year)
 
+        # get state population
+        state_population =  pd.read_sql_query(f"""SELECT sum(total_pop)
+                                    FROM incarceration
+                                    WHERE state = '{session.get('current_state')}'
+                                    AND year = '2016'
+                                    """, conn)
+        state_pop = state_population.values[0][0]
+        state_pop_formatted = "{:,}".format(state_pop)
+
         return render_template('county_data.html', 
                                 total_population=total_pop_formatted, 
+                                state_pop = state_pop_formatted,
                                 max_jail_pop=max_jail_pop_formatted,
                                 max_jail_pop_year=max_jail_pop_year,
                                 max_prison_pop=max_prison_pop_formatted,
@@ -383,12 +392,11 @@ def draw_map():
     states_topo = alt.topo_feature('https://raw.githubusercontent.com/vega/vega-datasets/master/data/us-10m.json', feature='states')
     counties_topo = alt.topo_feature('https://raw.githubusercontent.com/vega/vega-datasets/master/data/us-10m.json', feature='counties')
 
-
     state_map = Chart(data=states_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
                 fill='#827f7f',
                 stroke='white'
             ).transform_filter((alt.datum.id == state_id))
-
+    
     county_map = Chart(data=counties_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
                 fill='red',
                 stroke='white'
