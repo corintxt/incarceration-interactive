@@ -24,7 +24,7 @@
       <h2>Population</h2>
       <div class="chart-description">
         <p>County population (2016): <strong> {{ total_population }}</strong></p>
-        <p>State population (2016): {{ state_pop }} </p>
+        <p>State population (2016): <strong> {{ state_pop }} </strong></p>
     </div></div>
   </div>
 
@@ -49,15 +49,23 @@
   <div id="bar-container">
     <div class="text-center chart-description">
         <p>The charts below shows the change in prison and jail population in <strong>{{ session.get('current_county') }}</strong> over time.</p>
-        <p>The prison population in <strong>{{ session.get('current_county') }}</strong> reached its peak 
-          in <strong>{{ max_prison_pop_year }}</strong> with <strong>{{ max_prison_pop }}</strong> inmates.</p>
+
+        {% if session.get('prison_data_exists') %}
+            <p>The prison population in <strong>{{ session.get('current_county') }}</strong> reached its peak 
+            in <strong>{{ max_prison_pop_year }}</strong> with <strong>{{ max_prison_pop }}</strong> inmates.</p>
+        {% else %}
+            <p>Prison data is not available for {{ session.get('current_county') }}.</p>
+        {% endif %}
+
         <p>The jail population in <strong>{{ session.get('current_county') }}</strong> reached its peak in <strong>{{ max_jail_pop_year }}</strong> with <strong>{{ max_jail_pop }}</strong> inmates.</p>  
     </div>
 
-    <div class="charts text-center">
-      <div class="row"><div id="bar_prison"></div></div>
-      <div id="vis-tooltip" class="vg-tooltip"></div>
-    </div>
+    {% if session.get('prison_data_exists') %}
+      <div class="charts text-center">
+        <div class="row"><div id="bar_prison"></div></div>
+        <div id="vis-tooltip" class="vg-tooltip"></div>
+      </div>
+    {% endif %}
 
     <div class="charts text-center">
       <div class="row"><div id="bar_jail"></div></div>

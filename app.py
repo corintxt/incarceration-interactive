@@ -26,12 +26,22 @@ def read_county_from_db(state_name, county_name):
 
 
 def flatten(series):
-    '''Flattens list of lists returned by unpacking pandas series.values
-    after SQL query'''
+    """Flattens list of lists returned by unpacking pandas series.values
+    after SQL query"""
     flat_list = [item for sublist in series.values for item in sublist]
     return flat_list
-    
 
+# Function to avoid errors trying to round null data values for the multiline chart
+def to_percentage(num):
+    """
+    Function to avoid errors trying to round null data values for the multiline chart.
+    """
+    if isinstance(num, float):
+        num = num*100
+        return round(num, 0)
+    else:
+        pass
+    
 ### Routing stuff
 # Index page
 @app.route('/', methods=['POST', 'GET'])
@@ -44,6 +54,9 @@ def index():
                                     WHERE county_name = '{session.get('current_county')}'
                                     AND state = '{session.get('current_state')}'
                                     """, conn)
+        # Determine if prison data exists
+        prison_data = set(list(population.total_prison_pop))
+        session['prison_data_exists']=(prison_data != {None})    
 
         # Get total population in year 2016
         total_pop = int(population[population.year==2016].total_pop)
@@ -55,11 +68,12 @@ def index():
         max_jail_pop_formatted = "{:,}".format(max_jail_pop)
         max_jail_pop_year = int(max_jail_df.year)
         
-        # get max prison population, and associated years
-        max_prison_df = population.loc[population['total_prison_pop'].idxmax()]
-        max_prison_pop = int(max_prison_df.total_prison_pop)
-        max_prison_pop_formatted = "{:,}".format(max_prison_pop)
-        max_prison_pop_year = int(max_prison_df.year)
+        # get max prison population, and associated years if prison data exists
+        if session.get('prison_data_exists'):
+            max_prison_df = population.loc[population['total_prison_pop'].idxmax()]
+            max_prison_pop = int(max_prison_df.total_prison_pop)
+            max_prison_pop_formatted = "{:,}".format(max_prison_pop)
+            max_prison_pop_year = int(max_prison_df.year)
 
         # get state population
         state_population =  pd.read_sql_query(f"""SELECT sum(total_pop)
@@ -70,13 +84,20 @@ def index():
         state_pop = state_population.values[0][0]
         state_pop_formatted = "{:,}".format(state_pop)
 
-        return render_template('county_data.html', 
+        if session.get('prison_data_exists'):
+            return render_template('county_data.html',
+                                    total_population=total_pop_formatted, 
+                                    state_pop=state_pop_formatted,
+                                    max_jail_pop=max_jail_pop_formatted,
+                                    max_jail_pop_year=max_jail_pop_year,
+                                    max_prison_pop=max_prison_pop_formatted,
+                                    max_prison_pop_year=max_prison_pop_year)
+        else:
+            return render_template('county_data.html',
                                 total_population=total_pop_formatted, 
-                                state_pop = state_pop_formatted,
+                                state_pop=state_pop_formatted,
                                 max_jail_pop=max_jail_pop_formatted,
-                                max_jail_pop_year=max_jail_pop_year,
-                                max_prison_pop=max_prison_pop_formatted,
-                                max_prison_pop_year=max_prison_pop_year)
+                                max_jail_pop_year=max_jail_pop_year)
 
     # Redirect any GET request on '/' to county select
     else:
@@ -176,14 +197,6 @@ def data_bar_jail():
     )
     return chart.to_json()
 
-# Function to avoid errors trying to round null data values for the multiline chart
-def to_percentage(num):
-    if isinstance(num, float):
-        num = num*100
-        return round(num, 0)
-    else:
-        pass
-
 @app.route("/multiline")
 def multiline():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
@@ -247,20 +260,24 @@ def multiline():
         title='Ratio of white/black  inmates in jail population'
     )
 
-    total_wb_prison = alt.Chart(source[source['variable'].isin(wb_prison)], height=150, width=500).mark_bar().encode(
-    x=alt.X("year:O", axis=Axis(title='Year')),
-    y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
-    color=alt.Color('demographic:N', legend=None,
-             scale=alt.Scale(domain=list(demographic_labels.keys()),
-                            range=list(demographic_labels.values())
-                            )
-             )
-    ).properties(
-        title='Ratio of white/black  inmates in prison population'
-    )
+    if session.get('prison_data_exists'):
+        total_wb_prison = alt.Chart(source[source['variable'].isin(wb_prison)], height=150, width=500).mark_bar().encode(
+        x=alt.X("year:O", axis=Axis(title='Year')),
+        y=alt.Y("value:Q", stack="normalize", axis=Axis(title='Ratio')),
+        color=alt.Color('demographic:N', legend=None,
+                scale=alt.Scale(domain=list(demographic_labels.keys()),
+                                range=list(demographic_labels.values())
+                                )
+                )
+        ).properties(
+            title='Ratio of white/black  inmates in prison population'
+        )
 
-    # Concatenate charts
-    chart = alt.vconcat(total_wb_population, total_wb_jail, total_wb_prison)
+        # Concatenate charts
+        chart = alt.vconcat(total_wb_population, total_wb_jail, total_wb_prison)
+    else:
+        # Concatenate charts
+        chart = alt.vconcat(total_wb_population, total_wb_jail)
 
     return chart.to_json()
 
