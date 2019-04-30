@@ -392,17 +392,11 @@ def draw_map():
     states_topo = alt.topo_feature('https://raw.githubusercontent.com/vega/vega-datasets/master/data/us-10m.json', feature='states')
     counties_topo = alt.topo_feature('https://raw.githubusercontent.com/vega/vega-datasets/master/data/us-10m.json', feature='counties')
 
-
     state_map = Chart(data=states_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
                 fill='#827f7f',
                 stroke='white'
             ).transform_filter((alt.datum.id == state_id))
     
-    # all_county_map = Chart(data=counties_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
-    #             fill='#827f7f',
-    #             stroke='white'
-    #         )
-
     county_map = Chart(data=counties_topo, height=HEIGHT, width=WIDTH).mark_geoshape(
                 fill='red',
                 stroke='white'
