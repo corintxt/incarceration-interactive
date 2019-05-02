@@ -10,9 +10,13 @@ A Recurse Center project by Corin Faife and Zoe Statman-Weil.
 
 
 ## Data notes / to-do
-* When the value of prison data is `null` for a given county we should not show a chart. (Example: Benton County)
-* This also applies to the scatter chart (which is based on total prison population.)
-* Some states (Kansas) have no data whatsoever for prisons.
+* Make some 'quick win' charts with data that already exists as csv columns
+
+* Input type `submit` displays as submit query on Firefox.
+
+* Fill in missing body text, tweak design
+
+* Test with as many counties as possible
 
 Error:
 Connecticut/Windham County - 'reduction operation 'argmax' not allowed for this dtype'

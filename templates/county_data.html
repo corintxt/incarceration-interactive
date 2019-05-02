@@ -58,6 +58,9 @@
         {% endif %}
 
         <p>The jail population in <strong>{{ session.get('current_county') }}</strong> reached its peak in <strong>{{ max_jail_pop_year }}</strong> with <strong>{{ max_jail_pop }}</strong> inmates.</p>  
+        <p>The <span class='orange'>orange</span> bars show the proportion of the jail population that is <span class='orange'>pre-trial</span>, i.e. 
+        charged with a crime but awaiting a court date. (These are typically people who are 
+        <a href='https://www.nytimes.com/2019/01/11/nyregion/how-does-bail-work-and-why-do-people-want-to-get-rid-of-it.html'>too poor to post bail</a>).</p>
     </div>
 
     {% if session.get('prison_data_exists') %}
@@ -72,27 +75,6 @@
       <div id="vis-tooltip" class="vg-tooltip"></div>
     </div>      
   </div>
-
-  <hr>
-
-  <div class="text-center">
-      <h2>State level comparison</h2>
-  </div>
-  <div class="text-center chart-description">
-      <p>The chart below shows the prison population compared to total population
-        for each county in <strong>{{ session.get('current_state') }}</strong> state. 
-        Data for <strong>{{ session.get('current_county') }} </strong> is represented by a purple square.
-  
-      </p>
-      <p>Hovering over a dot provides additional information. Use the mouse wheel to zoom in and out of the chart.</p>
-      <p><em>(NB: A null value for total prison population on this chart indicates that the state
-        declined to provide the requested information.)</em></p>
-    </div>
-  <div class="charts text-center">
-      <div class="row"><div id="scatter"></div></div>
-      <div id="vis-tooltip" class="vg-tooltip"></div>
-  </div>
-  
 
   <hr>
   
@@ -125,13 +107,32 @@
 
   <hr>
 
+  <div class="text-center">
+    <h2>State level comparison</h2>
+</div>
+<div class="text-center chart-description">
+    <p>The chart below shows the prison population compared to total population
+      for each county in <strong>{{ session.get('current_state') }}</strong> state. 
+      Data for <strong>{{ session.get('current_county') }} </strong> is highlighted by a square box.
+
+    </p>
+    <p>Hovering over a dot provides additional information. Use the mouse wheel to zoom in and out of the chart.</p>
+    <p><em>(NB: A null value for total prison population on this chart indicates that the state
+      declined to provide the requested information.)</em></p>
+  </div>
+<div class="charts text-center">
+    <div class="row"><div id="scatter"></div></div>
+    <div id="vis-tooltip" class="vg-tooltip"></div>
+</div>
+
+<hr>
+
   <div class="charts text-center">
       <div class="row">
         <a href="/select" class="btn btn-secondary" id="view-another" role="button">View another county</a>
       </div>
   </div>
-
-
+  
 </div>
 
 <!-- Render Charts -->
