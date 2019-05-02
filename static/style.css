@@ -57,6 +57,10 @@ svg {
     display: inline;
 }
 
+span.orange {
+    color: #d66241;
+}
+
 
 /**** Selection form ****/
 
@@ -75,6 +79,7 @@ svg {
     margin-top: 5%;
     margin-left: 10%;
     margin-right: 10%;
+    margin-bottom: 10%;
     padding: 5%;
 }
 

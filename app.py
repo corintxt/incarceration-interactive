@@ -189,12 +189,26 @@ def data_bar_jail():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
     # Create the chart
-    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#444760').encode(
+    jail = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#444760').encode(
         X('year:O', axis=Axis(title='Year')),
-        Y('total_jail_pop', axis=Axis(title='Total Jail Population'))
+        Y('total_jail_pop', axis=Axis(title='Total Jail Population')),
+        tooltip=['year', 'total_jail_pop'] 
     ).properties(
     title='Jail population in {}'.format(session.get('current_county'))
-    )
+    ).interactive()
+
+    pre_trial = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(
+        color="#d66241", interpolate='step-after', line=True,
+        ).encode(
+        X('year:O', axis=Axis(title='Year')),
+        Y('total_jail_pretrial', axis=Axis(title='Number of inmates')),
+        tooltip=['year', 'total_jail_pretrial']        
+    ).properties(
+    title='Pre-trial jail population in {}'.format(session.get('current_county'))
+    ).interactive()
+
+    chart = alt.layer(jail + pre_trial)
+
     return chart.to_json()
 
 @app.route("/multiline")
@@ -279,38 +293,7 @@ def multiline():
         # Concatenate charts
         chart = alt.vconcat(total_wb_population, total_wb_jail)
 
-    return chart.to_json()
-
-    # # Transparent selectors across the chart. This is what tells us
-    # # the x-value of the cursor
-    # selectors = alt.Chart().mark_point().encode(
-    #     x='year:O',
-    #     opacity=alt.value(0),
-    # ).add_selection(
-    #     nearest
-    # )
-
-    # # Draw points on the line, and highlight based on selection
-    # points = line.mark_point().encode(
-    #     opacity=alt.condition(nearest, alt.value(1), alt.value(0))
-    # )
-
-    # # Draw text labels near the points, and highlight based on selection
-    # text = line.mark_text(align='left', dx=5, dy=-5).encode(
-    #     text=alt.condition(nearest, 'value_label:Q', alt.value(' '))
-    # )
-
-    # # Draw a rule at the location of the selection
-    # rules = alt.Chart().mark_rule(color='gray').encode(
-    #     x='year:O',
-    # ).transform_filter(
-    #     nearest
-    # )
-
-    # Put the five layers into a chart and bind the data
-    # chart = alt.layer(line, selectors, points, rules, text,
-    #         data=source, width=600, height=300)
-    
+    return chart.to_json()    
 
 
 # Called below in `scatter` route
@@ -373,14 +356,14 @@ def county_scatter():
     ).properties(
     title='Statewide prison population {}, {}'.format(year, state_name)).interactive()
 
-    county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(size=250,color='purple').encode(
+    county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(
+        size=250, fillOpacity=0.5, stroke='black', color='black').encode(
         X('total_pop', axis=Axis(title='County population')),
         Y('total_prison_pop', axis=Axis(title='Total prison population')),
-        # color='urbanicity',
         tooltip=['county_name', 'total_pop', 'total_prison_pop']
     ).interactive()
 
-    chart = alt.layer(state_chart,county_chart)
+    chart = alt.layer(county_chart, state_chart)
 
     return chart.to_json()
 
@@ -388,7 +371,7 @@ def county_scatter():
 def pretrial_jail_chart():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
-    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_area(
+    chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_line(
         color="#08080B",
         interpolate='step-after',
         line=True,
