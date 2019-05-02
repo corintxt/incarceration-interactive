@@ -172,15 +172,11 @@ def show_county(state_name, county_name):
     return render_template('select.html', state_name=state_name, county_name=county_name,
                             counties=session.get('counties'), states=session.get('states'))
 
-# Select county form
-@app.route("/county")
-def county():
-    return render_template('county_form.html')
-
 
 ### Altair data routes
 WIDTH = 600
 HEIGHT = 300
+
 
 @app.route("/bar_prison")
 def data_bar_prison():
@@ -194,6 +190,7 @@ def data_bar_prison():
     title='Prison population in {}'.format(session.get('current_county'))
     )
     return chart.to_json()
+
 
 @app.route("/bar_jail")
 def data_bar_jail():
@@ -222,6 +219,7 @@ def data_bar_jail():
 
     return chart.to_json()
 
+
 @app.route("/multiline")
 def multiline():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
@@ -230,11 +228,6 @@ def multiline():
 
     # Create a column for the label
     source['value_label'] = source['value'].apply(lambda x: to_percentage(x))
-
-    # Create a selection that chooses the nearest point & selects based on x-value
-    nearest = alt.selection(type='single', nearest=True, on='mouseover',
-                            fields=['year'], empty='none')
-
 
     demographics = ['Total white population (15-64)',
                'Total black population (15-64)',
@@ -329,9 +322,8 @@ def crime():
                         title='Reported crime by type'
                     )
     
+
     return chart.to_json()
-
-
 
 
 # Called below in `scatter` route
