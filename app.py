@@ -293,8 +293,12 @@ def multiline():
         # Concatenate charts
         chart = alt.vconcat(total_wb_population, total_wb_jail)
 
+<<<<<<< HEAD
+    return chart.to_json()
+=======
     return chart.to_json()    
 
+>>>>>>> 86547e7f540eb82a245c0a0cf846b5f698c15295
 
 # Called below in `scatter` route
 def test_nulls_for_year(year, state, conn):
@@ -350,14 +354,19 @@ def county_scatter():
     state_chart = Chart(data=all_counties_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=70).encode(
         X('total_pop', axis=Axis(title='County population')),
         Y('total_prison_pop', axis=Axis(title='Total prison population')),
-        color='urbanicity',
-        size='total_pop',
-        tooltip=['county_name', 'total_pop', 'total_prison_pop']
+        color=alt.Color('urbanicity', legend=alt.Legend(title='Urbanicity')),
+        size=alt.Color('total_pop', legend=alt.Legend(title='Total population')),
+        tooltip=[alt.Tooltip('county_name', title='County'), alt.Tooltip('total_pop', title='Total county population'), alt.Tooltip('total_prison_pop', title='Total prison population')],
     ).properties(
     title='Statewide prison population {}, {}'.format(year, state_name)).interactive()
 
+<<<<<<< HEAD
+
+    county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(size=250,color='purple').encode(
+=======
     county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(
         size=250, fillOpacity=0.5, stroke='black', color='black').encode(
+>>>>>>> 86547e7f540eb82a245c0a0cf846b5f698c15295
         X('total_pop', axis=Axis(title='County population')),
         Y('total_prison_pop', axis=Axis(title='Total prison population')),
         tooltip=['county_name', 'total_pop', 'total_prison_pop']
