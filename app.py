@@ -281,38 +281,6 @@ def multiline():
 
     return chart.to_json()
 
-    # # Transparent selectors across the chart. This is what tells us
-    # # the x-value of the cursor
-    # selectors = alt.Chart().mark_point().encode(
-    #     x='year:O',
-    #     opacity=alt.value(0),
-    # ).add_selection(
-    #     nearest
-    # )
-
-    # # Draw points on the line, and highlight based on selection
-    # points = line.mark_point().encode(
-    #     opacity=alt.condition(nearest, alt.value(1), alt.value(0))
-    # )
-
-    # # Draw text labels near the points, and highlight based on selection
-    # text = line.mark_text(align='left', dx=5, dy=-5).encode(
-    #     text=alt.condition(nearest, 'value_label:Q', alt.value(' '))
-    # )
-
-    # # Draw a rule at the location of the selection
-    # rules = alt.Chart().mark_rule(color='gray').encode(
-    #     x='year:O',
-    # ).transform_filter(
-    #     nearest
-    # )
-
-    # Put the five layers into a chart and bind the data
-    # chart = alt.layer(line, selectors, points, rules, text,
-    #         data=source, width=600, height=300)
-    
-
-
 # Called below in `scatter` route
 def test_nulls_for_year(year, state, conn):
     percent_nulls = pd.read_sql_query(f"""SELECT
@@ -367,11 +335,12 @@ def county_scatter():
     state_chart = Chart(data=all_counties_prison_pop, height=HEIGHT, width=WIDTH).mark_circle(size=70).encode(
         X('total_pop', axis=Axis(title='County population')),
         Y('total_prison_pop', axis=Axis(title='Total prison population')),
-        color='urbanicity',
-        size='total_pop',
-        tooltip=['county_name', 'total_pop', 'total_prison_pop']
+        color=alt.Color('urbanicity', legend=alt.Legend(title='Urbanicity')),
+        size=alt.Color('total_pop', legend=alt.Legend(title='Total population')),
+        tooltip=[alt.Tooltip('county_name', title='County'), alt.Tooltip('total_pop', title='Total county population'), alt.Tooltip('total_prison_pop', title='Total prison population')],
     ).properties(
     title='Statewide prison population {}, {}'.format(year, state_name)).interactive()
+
 
     county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(size=250,color='purple').encode(
         X('total_pop', axis=Axis(title='County population')),
