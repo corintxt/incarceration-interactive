@@ -59,10 +59,14 @@
             <p>Prison data is not available for {{ session.get('current_county') }}.</p>
         {% endif %}
 
-        <p>The jail population in <strong>{{ session.get('current_county') }}</strong> reached its peak in <strong>{{ max_jail_pop_year }}</strong> with <strong>{{ max_jail_pop }}</strong> inmates.</p>  
-        <p>The <span class='orange'>orange</span> bars show the proportion of the jail population that is <span class='orange'>pre-trial</span>, i.e. 
-        charged with a crime but awaiting a court date. (These are typically people who are 
-        <a href='https://www.nytimes.com/2019/01/11/nyregion/how-does-bail-work-and-why-do-people-want-to-get-rid-of-it.html'>too poor to post bail</a>).</p>
+        {% if session.get('jail_data_exists') %}
+          <p>The jail population in <strong>{{ session.get('current_county') }}</strong> reached its peak in <strong>{{ max_jail_pop_year }}</strong> with <strong>{{ max_jail_pop }}</strong> inmates.</p>  
+          <p>The <span class='orange'>orange</span> bars show the proportion of the jail population that is <span class='orange'>pre-trial</span>, i.e. 
+          charged with a crime but awaiting a court date. (These are typically people who are 
+          <a href='https://www.nytimes.com/2019/01/11/nyregion/how-does-bail-work-and-why-do-people-want-to-get-rid-of-it.html'>too poor to post bail</a>).</p>
+        {% else %}
+          <p>Jail data is not available for {{ session.get('current_county') }}.</p>
+        {% endif %}
     </div>
 
     {% if session.get('prison_data_exists') %}
@@ -72,10 +76,13 @@
       </div>
     {% endif %}
 
-    <div class="charts text-center">
-      <div class="row"><div id="bar_jail"></div></div>
-      <div id="vis-tooltip" class="vg-tooltip"></div>
-    </div>      
+
+    {% if session.get('jail_data_exists') %}
+      <div class="charts text-center">
+        <div class="row"><div id="bar_jail"></div></div>
+        <div id="vis-tooltip" class="vg-tooltip"></div>
+      </div> 
+    {% endif %}     
   </div>
 
   <hr>
