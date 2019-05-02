@@ -84,6 +84,17 @@ def index():
         state_pop = state_population.values[0][0]
         state_pop_formatted = "{:,}".format(state_pop)
 
+
+        facilities_data =  pd.read_sql_query(f"""SELECT num_facilites, capacity
+                                    FROM incarceration
+                                    WHERE county_name = '{session.get('current_county')}'
+                                    AND state = '{session.get('current_state')}'
+                                    AND year = '2016'
+                                    """, conn)
+
+        session['num_facilities'] = int(facilities_data['num_facilites'][0])
+        session['capacity'] = int(facilities_data['capacity'][0])
+
         if session.get('prison_data_exists'):
             return render_template('county_data.html',
                                     total_population=total_pop_formatted, 
@@ -293,12 +304,35 @@ def multiline():
         # Concatenate charts
         chart = alt.vconcat(total_wb_population, total_wb_jail)
 
-<<<<<<< HEAD
-    return chart.to_json()
-=======
     return chart.to_json()    
 
->>>>>>> 86547e7f540eb82a245c0a0cf846b5f698c15295
+
+@app.route("/crime")
+def crime():
+    county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
+
+    source = chart_processor.process_crime(county_data)
+
+    chart = alt.Chart(source, width=WIDTH, height=HEIGHT).mark_circle(
+                        opacity=0.7,
+                        stroke='grey',
+                        strokeWidth=1
+                    ).encode(
+                        alt.X('year:O', axis=alt.Axis(labelAngle=0, title='Year')),
+                        alt.Y('Crime:N'),
+                        alt.Size('Number:Q',
+                            scale=alt.Scale(range=[0, 1500]), 
+                            legend=alt.Legend(title='Reports')
+                        ),
+                        alt.Color('Crime:N', legend=None)
+                    ).properties(
+                        title='Reported crime by type'
+                    )
+    
+    return chart.to_json()
+
+
+
 
 # Called below in `scatter` route
 def test_nulls_for_year(year, state, conn):
@@ -360,13 +394,8 @@ def county_scatter():
     ).properties(
     title='Statewide prison population {}, {}'.format(year, state_name)).interactive()
 
-<<<<<<< HEAD
-
-    county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(size=250,color='purple').encode(
-=======
     county_chart = Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(
         size=250, fillOpacity=0.5, stroke='black', color='black').encode(
->>>>>>> 86547e7f540eb82a245c0a0cf846b5f698c15295
         X('total_pop', axis=Axis(title='County population')),
         Y('total_prison_pop', axis=Axis(title='Total prison population')),
         tooltip=['county_name', 'total_pop', 'total_prison_pop']

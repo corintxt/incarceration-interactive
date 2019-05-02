@@ -14,10 +14,16 @@ A Recurse Center project by Corin Faife and Zoe Statman-Weil.
 
 * Input type `submit` displays as submit query on Firefox.
 
+* Fix `width: 100` problem in Chrome on Windows
+
 * Fill in missing body text, tweak design
 
 * Test with as many counties as possible
 
+* Barber County, Kansas - jail population less than pre-trial jail pop.
+
 Error:
-Connecticut/Windham County - 'reduction operation 'argmax' not allowed for this dtype'
+Connecticut/Windham County - 'reduction operation 'argmax' not allowed for this dtype' => no jail pop.
+
+
 
