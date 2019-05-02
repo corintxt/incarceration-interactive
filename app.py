@@ -192,7 +192,7 @@ def data_bar_jail():
     jail = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#444760').encode(
         X('year:O', axis=Axis(title='Year')),
         Y('total_jail_pop', axis=Axis(title='Total Jail Population')),
-        tooltip=['year', 'total_jail_pop'] 
+        tooltip=[alt.Tooltip('year', title='Year'), alt.Tooltip('total_jail_pop', title='Total jail population')]
     ).properties(
     title='Jail population in {}'.format(session.get('current_county'))
     ).interactive()
@@ -202,7 +202,7 @@ def data_bar_jail():
         ).encode(
         X('year:O', axis=Axis(title='Year')),
         Y('total_jail_pretrial', axis=Axis(title='Number of inmates')),
-        tooltip=['year', 'total_jail_pretrial']        
+        tooltip=[alt.Tooltip('year', title='Year'), alt.Tooltip('total_jail_pretrial', title='Pre-trial jail population')]        
     ).properties(
     title='Pre-trial jail population in {}'.format(session.get('current_county'))
     ).interactive()
