@@ -11,19 +11,21 @@ A Recurse Center project by Corin Faife and Zoe Statman-Weil.
 
 ## Data notes / to-do
 
-* Input type `submit` displays as submit query on Firefox.
+* Input type `submit` displays as submit query on Firefox. (possibly this is fine)
 
 * Fix `width: 100` problem in Chrome on Windows
-
-* Test with as many counties as possible
 
 * Make session key generate each time 
 
 * Barber County, Kansas - jail population less than pre-trial jail pop.
 
-Error:
-Connecticut/Windham County - 'reduction operation 'argmax' not allowed for this dtype' => no jail pop.
+* Connecticut/Windham County - 'reduction operation 'argmax' not allowed for this dtype' => no jail pop.
 
-Finally: Switch off debug mode in production app.
+Finally: 
+* Test with as many counties as possible
+* Add personal links in About / header.
+* Register a domain
+* Switch off debug mode in production app.
+* Add a google tracker for stats (?)
 
 
