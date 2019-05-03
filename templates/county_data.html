@@ -109,10 +109,13 @@
 <div class="text-center chart-description">
     <p>The chart below shows the prison population compared to total population
       for each county in <strong>{{ session.get('current_state') }}</strong> state. 
-      Data for <strong>{{ session.get('current_county') }} </strong> is highlighted by a square box.
-
+      Data for <strong>{{ session.get('current_county') }} </strong> is shown in a square box.
     </p>
-    <p>Hovering over a dot provides additional information. Use the mouse wheel to zoom in and out of the chart.</p>
+    <p>
+      Points that are higher on the y axis than the general trend show counties that imprison more people relative to 
+      the general population.
+    </p> 
+    <p>Hovering over a dot provides additional information, mouse wheel zooms in and out of the chart.</p>
     <p><em>(NB: A null value for total prison population on this chart indicates that the state
       declined to provide the requested information.)</em></p>
   </div>

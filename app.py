@@ -110,6 +110,13 @@ def index():
     # Redirect any GET request on '/' to county select
     else:
         return redirect(url_for('select'))
+        
+
+# Select
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 
 # Select
 @app.route('/select')
