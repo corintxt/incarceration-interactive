@@ -4,12 +4,16 @@ import pandas as pd
 import altair as alt
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
-import chart_processor
+import helper_functions
 
 app = Flask(__name__)
 
 
+## Functions with SQL queries used in routes
 def read_county_from_db(state_name, county_name):
+    """
+    Connects to the database and returns a DataFrame of all data for specific county
+    """
     # Connect to database
     conn = sqlite3.connect('./db/incarceration.db')
 
@@ -25,25 +29,20 @@ def read_county_from_db(state_name, county_name):
 
     return data
 
-
-def flatten(series):
-    """Flattens list of lists returned by unpacking pandas series.values
-    after SQL query"""
-    flat_list = [item for sublist in series.values for item in sublist]
-    return flat_list
-
-# Function to avoid errors trying to round null data values for the multiline chart
-
-
-def to_percentage(num):
+# Query function called in `scatter` route
+def test_nulls_for_year(year, state, conn):
+    """ 
+    Tests to see how many null values are in the total_prison_pop
+    field within a given state in a given year.
     """
-    Function to avoid errors trying to round null data values for the multiline chart.
-    """
-    if isinstance(num, float):
-        num = num*100
-        return round(num, 0)
-    else:
-        pass
+    percent_nulls = pd.read_sql_query(f"""SELECT
+                                               100.0 * count(total_prison_pop) / count(1) as PercentNotNull
+                                            FROM
+                                               incarceration
+                                            WHERE state = '{state}'
+                                            AND year = {year};
+                                            """, conn)
+    return percent_nulls
 
 # Routing stuff
 # Index page
@@ -123,7 +122,7 @@ def select():
                                     FROM incarceration;
                                     """, conn)
 
-    states = flatten(state_data)
+    states = helper_functions.flatten(state_data)
 
     conn.close()
 
@@ -143,7 +142,7 @@ def show_state(state_name):
                                     WHERE state = '{state_name}';
                                     """, conn)
 
-    counties = flatten(county_data)
+    counties = helper_functions.flatten(county_data)
 
     conn.close()
 
@@ -182,7 +181,6 @@ def county():
 WIDTH = 600
 HEIGHT = 300
 
-
 @app.route("/bar_prison")
 def data_bar_prison():
     county_data = read_county_from_db(session.get(
@@ -196,7 +194,6 @@ def data_bar_prison():
     title='Prison population in {}'.format(session.get('current_county'))
     )
     return chart.to_json()
-
 
 @app.route("/bar_jail")
 def data_bar_jail():
@@ -213,6 +210,7 @@ def data_bar_jail():
     title='Jail population in {}'.format(session.get('current_county'))
     ).interactive()
 
+    # Create pre-trial chart to overlay on top 
     pre_trial = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(
         color="#d66241", interpolate='step-after', line=True,
         ).encode(
@@ -229,16 +227,15 @@ def data_bar_jail():
 
     return chart.to_json()
 
-
 @app.route("/multiline")
 def multiline():
     county_data = read_county_from_db(session.get(
         'current_state'), session.get('current_county'))
 
-    source = chart_processor.process_data(county_data)
+    source = helper_functions.process_data(county_data)
 
     # Create a column for the label
-    source['value_label'] = source['value'].apply(lambda x: to_percentage(x))
+    source['value_label'] = source['value'].apply(lambda x: helper_functions.to_percentage(x))
 
     # Create a selection that chooses the nearest point & selects based on x-value
     nearest = alt.selection(type='single', nearest=True, on='mouseover',
@@ -322,7 +319,7 @@ def multiline():
 def crime():
     county_data = read_county_from_db(session.get('current_state'), session.get('current_county'))
 
-    source = chart_processor.process_crime(county_data)
+    source = helper_functions.process_crime(county_data)
 
     chart = alt.Chart(source, width=WIDTH, height=HEIGHT).mark_circle(
                         opacity=0.7,
@@ -341,18 +338,6 @@ def crime():
                     )
     
     return chart.to_json()
-
-# Called below in `scatter` route
-def test_nulls_for_year(year, state, conn):
-    percent_nulls = pd.read_sql_query(f"""SELECT
-                                   100.0 * count(total_prison_pop) / count(1) as PercentNotNull
-                                FROM
-                                   incarceration
-                                WHERE state = '{state}'
-                                AND year = {year};
-                                """, conn)
-    return percent_nulls
-
 
 @app.route("/scatter")
 def county_scatter():
