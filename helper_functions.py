@@ -78,3 +78,43 @@ def process_crime(dataframe):
     melt['Crime'] = melt.apply (lambda row: label_crimes(row), axis=1) 
 
     return melt
+
+## MISC HELPER FUNCTIONS
+def read_county_from_db(state_name, county_name):
+    """
+    Connects to the database and returns a DataFrame of all data for specific county
+    """
+    # Connect to database
+    conn = sqlite3.connect('./db/incarceration.db')
+
+    # Query the database
+    data = pd.read_sql_query(f"""SELECT *
+                                    FROM incarceration
+                                    WHERE county_name = '{county_name}'
+                                    AND state = '{state_name}';
+                                    """, conn)
+
+    # Close connection
+    conn.close()
+
+    return data
+
+
+def flatten(series):
+    """
+    Flattens list of lists returned by unpacking pandas series.values
+    after SQL query
+    """
+    flat_list = [item for sublist in series.values for item in sublist]
+    return flat_list
+
+def to_percentage(num):
+    """
+    Function to avoid errors trying to round null data values for the multiline chart.
+    """
+    if isinstance(num, float):
+        num = num*100
+        return round(num, 0)
+    else:
+        pass
+
