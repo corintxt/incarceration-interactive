@@ -30,7 +30,11 @@ svg.marks {
 }
 
 .vega-embed {
-    display: block;
+    display: block !important;
+}
+
+.vega-embed summary {
+    right: 5% !important;
 }
 
 .chart-header {
@@ -107,23 +111,31 @@ span.orange {
 
 /**** Mobile overrides ****/
 
-@media (max-width: 768px) {
+@media (max-device-width: 767px) {
     nav li {
         font-size: 4vw;
     }
-}
-
-@media (max-width: 768px) {
     .container {
-        max-width: 95%;
-    }
-}
-@media (max-width: 768px) {
+        max-width: 95%;    }
+
     .chart-description {
         width: 90%;
     }
+    p {
+        font-size: 3vw;
+    }
 }
-@media (max-width: 768px) {
+
+@media (min-width: 350px) and (max-width: 767px) {
+    nav li {
+        font-size: 4vw;
+    }
+    .container {
+        max-width: 95%;    }
+
+    .chart-description {
+        width: 90%;
+    }
     p {
         font-size: 3vw;
     }
