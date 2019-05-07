@@ -5,6 +5,7 @@ import altair as alt
 from altair import Chart, X, Y, Axis, Data, DataFormat
 import sqlite3
 import helper_functions
+import os
 
 app = Flask(__name__)
 
@@ -449,5 +450,5 @@ def draw_map():
     return chart.to_json()
 
 if __name__ == '__main__':
-    app.secret_key='very secret key'  # Fix this later!
+    app.secret_key=os.urandom(16).hex()
     app.run(debug=True)

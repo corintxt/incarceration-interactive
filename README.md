@@ -11,21 +11,22 @@ A Recurse Center project by Corin Faife and Zoe Statman-Weil.
 
 ## Data notes / to-do
 
+* Rewrite intro text on select page
+
 * Input type `submit` displays as submit query on Firefox. (possibly this is fine)
 
 * Fix `width: 100` problem in Chrome on Windows
-
-* Make session key generate each time 
 
 * Barber County, Kansas - jail population less than pre-trial jail pop.
 
 * Connecticut/Windham County - 'reduction operation 'argmax' not allowed for this dtype' => no jail pop.
 
+* Bristol bay borough, AK - ?
+* Kusilvak census area, AK - NoneType
+
 Finally: 
 * Test with as many counties as possible
-* Add personal links in About / header.
-* Register a domain
-* Switch off debug mode in production app.
+* Create prod branch / switch off debug mode in prod app
 * Add a google tracker for stats (?)
 
 
