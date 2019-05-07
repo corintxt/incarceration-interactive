@@ -15,7 +15,7 @@ A Recurse Center project by Corin Faife and Zoe Statman-Weil.
 
 * Input type `submit` displays as submit query on Firefox. (possibly this is fine)
 
-* Fix `width: 100` problem in Chrome on Windows
+* Fix `width: 100` problem in Chrome on Windows (test for this from browser?)
 
 * Barber County, Kansas - jail population less than pre-trial jail pop.
 
@@ -27,6 +27,5 @@ A Recurse Center project by Corin Faife and Zoe Statman-Weil.
 Finally: 
 * Test with as many counties as possible
 * Create prod branch / switch off debug mode in prod app
-* Add a google tracker for stats (?)
 
 
