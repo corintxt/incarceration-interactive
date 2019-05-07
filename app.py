@@ -100,9 +100,12 @@ def index():
                                     AND state = '{session.get('current_state')}'
                                     AND year = '2016'
                                     """, conn)
-
-        session['num_facilities'] = int(facilities_data['num_facilites'][0])
-        session['capacity'] = int(facilities_data['capacity'][0])
+        num_facilities = int(facilities_data['num_facilites'][0])
+        capacity = int(facilities_data['capacity'][0])
+        
+        # Define session variables for num of facilities and capacity
+        session['num_facilities'] = "{:,}".format(num_facilities)
+        session['capacity'] = "{:,}".format(capacity)
 
         return render_template('county_data.html',
                                 total_population=total_pop_formatted,
@@ -190,13 +193,20 @@ def data_bar_prison():
     county_data = read_county_from_db(session.get(
         'current_state'), session.get('current_county'))
 
+    # Create a label for the prison population to be included in the chart.
+    # Result of lambda is a float, thus the slice notation is used
+    county_data['total_prison_pop_label'] = county_data['total_prison_pop'].apply(lambda x: "{:,}".format(x)[:-2])
+
     # Create the chart
     chart = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#2f3142').encode(
         X('year:O', axis=Axis(title='Year')),
-        Y('total_prison_pop', axis=Axis(title='Total Prison Population'))
+        Y('total_prison_pop', axis=Axis(title='Total Prison Population')),
+        tooltip=[alt.Tooltip('year', title='Year'), alt.Tooltip(
+            'total_prison_pop_label', title='Total prison population')]
     ).properties(
     title='Prison population in {}'.format(session.get('current_county'))
-    )
+    ).interactive()
+
     return chart.to_json()
 
 
@@ -205,12 +215,17 @@ def data_bar_jail():
     county_data = read_county_from_db(session.get(
         'current_state'), session.get('current_county'))
 
+    # Create a label for the jail population to be included in the chart.
+    # Result of lambda is a float, thus the slice notation is used
+    county_data['total_jail_pop_label'] = county_data['total_jail_pop'].apply(lambda x: "{:,}".format(x)[:-2])
+    county_data['total_jail_pretrial_label'] = county_data['total_jail_pretrial'].apply(lambda x: "{:,}".format(x)[:-2])
+    
     # Create the chart
     jail = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(color='#444760').encode(
         X('year:O', axis=Axis(title='Year')),
         Y('total_jail_pop', axis=Axis(title='Total Jail Population')),
         tooltip=[alt.Tooltip('year', title='Year'), alt.Tooltip(
-            'total_jail_pop', title='Total jail population')]
+            'total_jail_pop_label', title='Total jail population')]
     ).properties(
     title='Jail population in {}'.format(session.get('current_county'))
     ).interactive()
@@ -222,7 +237,7 @@ def data_bar_jail():
         X('year:O', axis=Axis(title='Year')),
         Y('total_jail_pretrial', axis=Axis(title='Number of inmates')),
         tooltip=[alt.Tooltip('year', title='Year'), alt.Tooltip(
-            'total_jail_pretrial', title='Pre-trial jail population')]
+            'total_jail_pretrial_label', title='Pre-trial jail population')]
     ).properties(
     title='Pre-trial jail population in {}'.format(
         session.get('current_county'))
@@ -241,7 +256,7 @@ def multiline():
     source = helper_functions.process_data(county_data)
 
     # Create a column for the label
-    source['value_label'] = source['value'].apply(lambda x: helper_functions.to_percentage(x))
+    source['value_label'] = source['value'].apply(lambda x: helper_functions.round_non_null_nums(x))
 
     # Create a selection that chooses the nearest point & selects based on x-value
     nearest = alt.selection(type='single', nearest=True, on='mouseover',
@@ -338,10 +353,12 @@ def crime():
                             scale=alt.Scale(range=[0, 1500]), 
                             legend=alt.Legend(title='Reports')
                         ),
-                        alt.Color('Crime:N', legend=None)
+                        alt.Color('Crime:N', legend=None),
+                        tooltip=[alt.Tooltip('year', title='Year'), alt.Tooltip(
+                                'Number', title='Reported crimes')],
                     ).properties(
                         title='Reported crime by type'
-                    )
+                    ).interactive()
     
     return chart.to_json()
 
