@@ -124,6 +124,9 @@ span.orange {
     p {
         font-size: 3vw;
     }
+    .home-title {
+        max-width: 70%;
+    }
 }
 
 @media (min-width: 350px) and (max-width: 767px) {
@@ -138,5 +141,8 @@ span.orange {
     }
     p {
         font-size: 3vw;
+    }    
+    .home-title {
+        max-width: 70%;
     }
 }
