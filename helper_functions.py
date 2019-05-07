@@ -108,9 +108,9 @@ def flatten(series):
     flat_list = [item for sublist in series.values for item in sublist]
     return flat_list
 
-def to_percentage(num):
+def round_non_null_nums(num):
     """
-    Function to avoid errors trying to round null data values for the multiline chart.
+    Function to avoid errors trying to round null data values.
     """
     if isinstance(num, float):
         num = num*100
