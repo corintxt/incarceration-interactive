@@ -13,10 +13,7 @@
 
     <title>Incarceration.info</title>
     <meta charset="utf-8">
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
@@ -25,9 +22,11 @@
     <script src="https://cdn.jsdelivr.net/npm/vega@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script>
-
     <script src="https://vega.github.io/datalib/datalib.min.js"></script>
 
+     <!-- Custom stylesheet -->
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <style>hr, h3 {padding-bottom: 20px;} canvas {background-color: #fffff;}</style>
     
