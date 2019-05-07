@@ -7,3 +7,4 @@ incarceration-interactive.code-workspace
 plotting-demo.ipynb
 Codebook.pdf
 *.swp
+*.ipynb
