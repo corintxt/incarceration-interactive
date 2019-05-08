@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 import altair as alt
@@ -94,7 +95,7 @@ def index():
         state_pop = state_population.values[0][0]
         state_pop_formatted = "{:,}".format(state_pop)
 
-        facilities_data =  pd.read_sql_query(f"""SELECT num_facilites, capacity
+        facilities_data = pd.read_sql_query(f"""SELECT num_facilites, capacity
                                     FROM incarceration
                                     WHERE county_name = '{session.get('current_county')}'
                                     AND state = '{session.get('current_state')}'
@@ -108,8 +109,8 @@ def index():
         session['capacity'] = "{:,}".format(capacity)
 
         return render_template('county_data.html',
-                                total_population=total_pop_formatted,
-                                state_pop=state_pop_formatted)
+                               total_population=total_pop_formatted,
+                               state_pop=state_pop_formatted)
 
     # Redirect any GET request on '/' to county select
     else:
@@ -180,7 +181,7 @@ def show_county(state_name, county_name):
     session['fips'] = str(fips.values[0][0])  # unpack list of lists
 
     return render_template('select.html', state_name=state_name, county_name=county_name,
-                            counties=session.get('counties'), states=session.get('states'))
+                           counties=session.get('counties'), states=session.get('states'))
 
 
 # Altair data routes
@@ -419,7 +420,7 @@ def county_scatter():
         tooltip=['county_name', 'total_pop', 'total_prison_pop']
     ).interactive()
 
-    chart=alt.layer(county_chart, state_chart)
+    chart = alt.layer(county_chart, state_chart)
 
     return chart.to_json()
 
@@ -469,4 +470,4 @@ def draw_map():
 if __name__ == '__main__':
     app.secret_key=os.urandom(16).hex()
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=port)
