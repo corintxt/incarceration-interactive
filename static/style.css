@@ -118,14 +118,26 @@ span.orange {
     nav li {
         font-size: 4vw;
     }
+    nav h3 {
+        font-size: 2.5rem;
+    }
+    .container h1 {
+        font-size: 5rem;
+    }
+    .container h2 {
+        font-size: 4rem;
+    }
     .container {
-        max-width: 95%;    }
-
+        max-width: 100%;    
+    }
+    .chart-header {
+        max-width: 60%;
+    }
     .chart-description {
         width: 90%;
     }
     p {
-        font-size: 3.5vw;
+        font-size: 4vw;
     }
     .home-title {
         max-width: 70%;
@@ -139,9 +151,16 @@ span.orange {
     .dropdown-menu {
         font-size: 2rem;        
     }
+    .dropdown-item {
+        font-size: 3rem;
+    }
     .scrollable-menu {
         max-height: 400px;
         overflow-x: hidden;
+    }
+
+    body {
+        margin: -10px;
     }
 }
 
