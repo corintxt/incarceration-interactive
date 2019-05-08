@@ -35,7 +35,7 @@
   <div class="text-center">
       <h2>Prisons vs Jails</h2>
   </div>
-  <div class="text-center chart-description">
+  <div class="text-left chart-description">
     <p>The incarceration trends dataset provides information on both <strong>prisons</strong> and <strong>jails</strong>.</p>
     <p>In general, <strong>prisons</strong> are where people are detained after sentencing for more serious crimes, 
       and <strong>jails</strong> are where people are sent when first arrested, or to serve short sentences.</p>
@@ -54,7 +54,7 @@
   </div>
 
   <div id="bar-container">
-    <div class="text-center chart-description">
+    <div class="text-left chart-description">
         <p>The charts below shows the change in prison and jail population in <strong>{{ session.get('current_county') }}</strong> over time.</p>
 
         {% if session.get('prison_data_exists') %}
@@ -95,10 +95,10 @@
   <div class="text-center">
       <h2>Demographics</h2>
   </div>
-  <div class="text-center chart-description">
-      <p>Across the U.S., black people are incarcerated at disproportionately high rates relative to the general population.</p> 
-      <p>The first chart above shows the relative proportion of white to black residents in the population of <strong>{{ session.get('current_county') }} </strong>.</p>
-      <p>The next two charts show the proportion of white to black inmates in the jail and prison population respectively, starting with the earliest year for which data is reported.
+  <div class="text-left chart-description">
+      <p>Across the U.S., black people are incarcerated at disproportionately high rates relative to the general population. 
+     The first chart below shows the relative proportion of white to black residents in the population of <strong>{{ session.get('current_county') }} </strong>. 
+      The next two charts show the proportion of white to black inmates in the jail and prison population respectively, starting with the earliest year for which data is reported.
       </p>
     </div>
   <div class="charts text-center">
@@ -108,10 +108,29 @@
 
   <hr>
 
+<div class="text-center">
+    <h2>Crime statistics</h2>
+</div>  
+<div class="text-left chart-description">
+    <p>The chart below shows reported crime figures for <strong>{{session.get('current_county')}}</strong>.
+    The larger the circle, the more crimes of this type were reported in a given year.
+    </p>
+    <p>Crime reports are provided by participating law enforcement agencies to the FBI. 
+      In some counties, not all agencies participate in the reporting program.
+    </p>
+    <p>Gaps in the chart are years for which the county did not provide data.</p>
+  </div>
+<div class="charts text-center">
+    <div class="row"><div id="crime"></div></div>
+    <div id="vis-tooltip" class="vg-tooltip"></div>
+</div>
+
+<hr>
+
   <div class="text-center">
     <h2>State level comparison</h2>
 </div>
-<div class="text-center chart-description">
+<div class="text-left chart-description">
     <p>The chart below shows the prison population compared to total population
       for each county in <strong>{{ session.get('current_state') }}</strong> state. 
       Data for <strong>{{ session.get('current_county') }} </strong> is shown in a square box.
@@ -126,25 +145,6 @@
   </div>
 <div class="charts text-center">
     <div class="row"><div id="scatter"></div></div>
-    <div id="vis-tooltip" class="vg-tooltip"></div>
-</div>
-
-<hr>
-
-<div class="text-center">
-    <h2>Crime statistics</h2>
-</div>  
-<div class="text-center chart-description">
-    <p>The chart below shows reported crime figures for <strong>{{session.get('current_county')}}</strong>.
-    The larger the circle, the more crimes of this type were reported in a given year.
-    </p>
-    <p>Crime reports are provided by participating law enforcement agencies to the FBI. 
-      In some counties, not all agencies participate in the reporting program.
-    </p>
-    <p>Gaps in the chart are years for which the county did not provide data.</p>
-  </div>
-<div class="charts text-center">
-    <div class="row"><div id="crime"></div></div>
     <div id="vis-tooltip" class="vg-tooltip"></div>
 </div>
 
