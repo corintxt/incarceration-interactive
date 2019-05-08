@@ -122,13 +122,27 @@ span.orange {
         width: 90%;
     }
     p {
-        font-size: 3vw;
+        font-size: 3.5vw;
     }
     .home-title {
         max-width: 70%;
     }
+    .btn {
+        font-size: 2rem;
+        line-height: 2.5;
+        width: 100%;
+
+    }
+    .dropdown-menu {
+        font-size: 2rem;        
+    }
+    .scrollable-menu {
+        max-height: 400px;
+        overflow-x: hidden;
+    }
 }
 
+/** Small desktop screen **/
 @media (min-width: 350px) and (max-width: 767px) {
     nav li {
         font-size: 4vw;

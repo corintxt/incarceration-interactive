@@ -68,7 +68,17 @@
         {% endif %}
 
     </div>
-
 </div>
+
+<!-- Resize buttons -->
+<script type="text/javascript">
+$( window ).resize(function() {
+    if($(window).width() <=767) {
+        $('.btn').addClass("btn-block");
+        console.log("Block btn");
+    }
+    else { $('.btn').removeClass("btn-block"); }
+});
+</script> 
 
 {% endblock %}
