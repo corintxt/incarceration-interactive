@@ -206,7 +206,7 @@ def data_bar_prison():
             'total_prison_pop_label', title='Total prison population')]
     ).properties(
     title='Prison population in {}'.format(session.get('current_county'))
-    ).interactive()
+    )
 
     return chart.to_json()
 
@@ -229,7 +229,7 @@ def data_bar_jail():
             'total_jail_pop_label', title='Total jail population')]
     ).properties(
     title='Jail population in {}'.format(session.get('current_county'))
-    ).interactive()
+    )
 
     # Create pre-trial chart to overlay on top 
     pre_trial = Chart(data=county_data, height=HEIGHT, width=WIDTH).mark_bar(
@@ -242,7 +242,7 @@ def data_bar_jail():
     ).properties(
     title='Pre-trial jail population in {}'.format(
         session.get('current_county'))
-    ).interactive()
+    )
 
     chart = alt.layer(jail + pre_trial)
 
@@ -343,6 +343,10 @@ def crime():
 
     source = helper_functions.process_crime(county_data)
 
+    # Format numbers to include commas and remove '.0' from end 
+    source['Number_formatted'] = source['Number'].apply(lambda num:
+                                                        "{:,}".format(helper_functions.round_non_null_nums(num))[:-2])
+ 
     chart = alt.Chart(source, width=WIDTH, height=HEIGHT).mark_circle(
                         opacity=0.7,
                         stroke='grey',
@@ -356,7 +360,7 @@ def crime():
                         ),
                         alt.Color('Crime:N', legend=None),
                         tooltip=[alt.Tooltip('year', title='Year'), alt.Tooltip(
-                                'Number', title='Reported crimes')],
+                                'Number_formatted', title='Reported crimes')],
                     ).properties(
                         title='Reported crime by type'
                     ).interactive()
@@ -416,8 +420,7 @@ def county_scatter():
     county_chart=Chart(data=county_prison_pop, height=HEIGHT, width=WIDTH).mark_square(
         size=250, fillOpacity=0.5, stroke='black', color='black').encode(
         X('total_pop', axis=Axis(title='County population')),
-        Y('total_prison_pop', axis=Axis(title='Total prison population')),
-        tooltip=['county_name', 'total_pop', 'total_prison_pop']
+        Y('total_prison_pop', axis=Axis(title='Total prison population'))
     ).interactive()
 
     chart = alt.layer(county_chart, state_chart)

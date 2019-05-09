@@ -67,7 +67,7 @@
           <p>The jail population in <strong>{{ session.get('current_county') }}</strong> reached its peak in <strong>{{ session.get('max_jail_pop_year') }}</strong> with <strong>{{ session.get('max_jail_pop')}}</strong> inmates.</p>  
           <p>The <span class='orange'>orange</span> bars show the proportion of the jail population that is <span class='orange'>pre-trial</span>, i.e. 
           charged with a crime but awaiting a court date. (These are typically people who are 
-          <a href='https://www.nytimes.com/2019/01/11/nyregion/how-does-bail-work-and-why-do-people-want-to-get-rid-of-it.html'>too poor to post bail</a>).</p>
+          <a class='text-link' href='https://www.nytimes.com/2019/01/11/nyregion/how-does-bail-work-and-why-do-people-want-to-get-rid-of-it.html'>too poor to post bail</a>).</p>
         {% else %}
           <p>Jail data is <em>not available</em> for {{ session.get('current_county') }}.</p>
         {% endif %}
