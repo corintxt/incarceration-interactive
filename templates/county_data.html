@@ -37,14 +37,13 @@
   </div>
   <div class="text-left chart-description">
     <p>The incarceration trends dataset provides information on both <strong>prisons</strong> and <strong>jails</strong>.</p>
-    <p>In general, <strong>prisons</strong> are where people are detained after sentencing for more serious crimes, 
-      and <strong>jails</strong> are where people are sent when first arrested, or to serve short sentences.</p>
+    <p>In general, prisons are where people are detained after sentencing for more serious crimes, 
+      and jails are where people are sent when first arrested, or to serve short sentences.</p>
     <p>  
        Some people in jail have been convicted of misdemeanor crimes, while others have been charged with a crime, 
-        and remain there as their cases progress through the criminal justice system.
+        and remain there as their cases progress through the criminal justice system. 
+        Overall, jails house around <strong>1/3</strong> of the country's incarcerated population on any given day.
     </p>
-    <p></p>
-    <p>Overall, jails house around <strong>1/3</strong> of the country's incarcerated population on any given day.</p>
   </div>
 
   <hr>
@@ -61,7 +60,7 @@
             <p>The prison population in <strong>{{ session.get('current_county') }}</strong> reached its peak 
             in <strong>{{ session.get('max_prison_pop_year') }}</strong> with <strong>{{ session.get('max_prison_pop') }}</strong> inmates.</p>
         {% else %}
-            <p>Prison data is not available for {{ session.get('current_county') }}.</p>
+            <p>Prison data is <em>not available</em> for {{ session.get('current_county') }}.</p>
         {% endif %}
 
         {% if session.get('jail_data_exists') %}
@@ -70,7 +69,7 @@
           charged with a crime but awaiting a court date. (These are typically people who are 
           <a href='https://www.nytimes.com/2019/01/11/nyregion/how-does-bail-work-and-why-do-people-want-to-get-rid-of-it.html'>too poor to post bail</a>).</p>
         {% else %}
-          <p>Jail data is not available for {{ session.get('current_county') }}.</p>
+          <p>Jail data is <em>not available</em> for {{ session.get('current_county') }}.</p>
         {% endif %}
     </div>
 
@@ -140,7 +139,7 @@
       the general population.
     </p> 
     <p>Hovering over a dot provides additional information, mouse wheel zooms in and out of the chart.</p>
-    <p><em>(NB: A null value for total prison population on this chart indicates that the state
+    <p><em>(Note: A null value for total prison population on this chart indicates that the state
       declined to provide the requested information.)</em></p>
   </div>
 <div class="charts text-center">
