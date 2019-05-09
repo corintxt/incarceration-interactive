@@ -136,6 +136,11 @@ span.orange {
     .chart-description {
         width: 90%;
     }
+
+    svg.marks {
+        width: 100%;
+    }
+
     p {
         font-size: 4vw;
     }
@@ -155,7 +160,7 @@ span.orange {
         font-size: 3rem;
     }
     .scrollable-menu {
-        max-height: 400px;
+        max-height: 500px;
         overflow-x: hidden;
     }
 
@@ -167,7 +172,7 @@ span.orange {
 /** Small desktop screen **/
 @media (min-width: 350px) and (max-width: 767px) {
     nav li {
-        font-size: 4vw;
+        font-size: 5vw;
     }
     .container {
         max-width: 95%;    }
